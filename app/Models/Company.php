@@ -24,7 +24,7 @@ class Company extends Model
     public function users()
     {
         // belongsTo(RelatedModel, foreignKey = service_id, keyOnRelatedModel = id)
-        return $this->HasMany(User::class);
+        return $this->belongsToMany(User::class);
     }
 
     

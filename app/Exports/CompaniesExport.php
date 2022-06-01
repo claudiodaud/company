@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Company;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
@@ -24,16 +25,19 @@ class CompaniesExport implements FromView
         
 
         if ($this->search != null) {
+            $companiesByUser = User::find(auth()->user()->id)->companies();
+            $companies = $companiesByUser->Where(function($query) {
+                             $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
+                                     ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
+                                     ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
+                             })->orderBy('companies.id', 'DESC')->get();
+
             return view('exports.CompaniesExport', [
-            'companies' => Company::Where('name', 'like', '%'.$this->search.'%')
-                           ->orWhere('created_at', 'like', '%'.$this->search.'%')
-                           ->orWhere('updated_at', 'like', '%'.$this->search.'%')
-                           ->orderBy('id', 'DESC')
-                           ->get(),
+            'companies' => $companies,
             ]); 
         }else{
            return view('exports.CompaniesExport', [
-            'companies' => Company::all(),
+            'companies' => User::find(auth()->user()->id)->companies()->orderBy('companies.id', 'DESC')->get(),
             ]); 
         }
     }

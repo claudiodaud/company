@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Companies;
 
 
+use App\Exports\CompaniesExport;
 use App\Models\Company;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -11,7 +13,6 @@ use Illuminate\Validation\withMessages;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Excel;
-use App\Exports\CompaniesExport;
 
 
 class CompanyIndex extends Component
@@ -29,11 +30,12 @@ class CompanyIndex extends Component
     public $createNewCompany = false; 
     public $name;
 
-    public $company;
-    
+    public $companyEdit;
+    public $companyShow;
 
     
     public $editCompany = false;
+    public $showCompany = false;
 
     public $search; 
 
@@ -44,18 +46,23 @@ class CompanyIndex extends Component
 
     public function render()
     {
-        $companies = Company::orWhere('name', 'like', '%'.$this->search.'%')
-           ->orWhere('created_at', 'like', '%'.$this->search.'%')
-           ->orWhere('updated_at', 'like', '%'.$this->search.'%')
-           ->orderBy('id', 'DESC')
-           ->paginate(10);
+        $companiesByUser = User::find(auth()->user()->id)->companies();
+        $companies = $companiesByUser->Where(function($query) {
+                             $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
+                                     ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
+                                     ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
+                             })->orderBy('companies.id', 'DESC')->paginate(10);
 
-        
-        return view('livewire.company-index', [
+        return view('livewire.companies.company-index', [
 
             'companies' => $companies,
 
         ]);
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();        
     }
 
     public function confirmCompanyDeletion($companyId)
@@ -84,7 +91,6 @@ class CompanyIndex extends Component
         }       
     }
 
-
  
     public function saveCompany()
     {
@@ -96,8 +102,8 @@ class CompanyIndex extends Component
 
         $this->name = "";
         $this->createNewCompany = false; 
+        $this->resetPage();
         $this->emit('created');
-
     }
 
     public function updatedCreateNewCompany()
@@ -113,6 +119,7 @@ class CompanyIndex extends Component
         $company = Company::find($id);   
         
         $this->company = $company;
+        
         $this->name = $company->name;
 
         $this->editCompany = true; 
@@ -125,11 +132,9 @@ class CompanyIndex extends Component
         Company::find($this->company->id)->update([
 
             'name' => $this->name,
-        ]);
-        
-       
-        $this->name = "";
-        $this->company = "";
+        ]);        
+        $this->name = null;     
+        $this->company = null;
         $this->editCompany = false; 
         $this->emit('updated');
     }
@@ -140,5 +145,22 @@ class CompanyIndex extends Component
        return (new CompaniesExport($this->search))->download('companies.xlsx'); 
        
     }
+
+    public function showCompany($id)
+    {
+        $this->companyShow = Company::where('id',$id)->with('users')->first();
+        
+
+        $this->showCompany = true;
+    }
+
+    public function closeShowCompany()
+    {
+        $this->showCompany = false;
+
+        $this->companyShow = null;        
+    }
+
+
 
 }

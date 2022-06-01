@@ -1,7 +1,10 @@
 <?php
 
-use App\Http\Livewire\CompanyCreate;
-use App\Http\Livewire\CompanyIndex;
+
+
+
+use App\Http\Livewire\Companies\CompanyIndex;
+use App\Http\Livewire\Users\UserIndex;
 use App\Models\User;
 use Illuminate\Auth\Middleware\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,20 +24,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified'
-])->group(function () {
-    
-    Route::get('/dashboard', function () {
-    
-     return view('dashboard');
-    
-    })->name('dashboard');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+        
+        Route::get('/dashboard', function () {
+        
+         return view('dashboard');
+        
+        })->name('dashboard');
 
-    
+        // Users - Roles and Permission Modules
+        Route::get('/users-index', UserIndex::class)->name('users.index');
+        //Route::get('/roles-index', RoleIndex::class)->name('roles.index');
+        //Route::get('/permissions-index', PermissionIndex::class)->name('permissions.index');
 
-    Route::get('/company-index', CompanyIndex::class)->name('company.index');
-    Route::get('/company-create', CompanyCreate::class)->name('company.create');
-});
+        // Operationals Modules 
+        Route::get('/companies-index', CompanyIndex::class)->name('companies.index');
+        //Route::get('/boxes-index', BoxIndex::class)->name('box.index');
+    });

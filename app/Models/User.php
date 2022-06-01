@@ -30,7 +30,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','company_id',
     ];
 
     /**
@@ -40,6 +40,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'company_id',
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
@@ -64,10 +65,10 @@ class User extends Authenticatable
     ];
 
 
-    public function company()
+    public function companies()
     {
         // belongsTo(RelatedModel, foreignKey = service_id, keyOnRelatedModel = id)
-        return $this->belongsTo(Company::class);
+        return $this->belongsToMany(Company::class);
     }
 
     /**
@@ -79,5 +80,10 @@ class User extends Authenticatable
     {
         // hasMany(RelatedModel, foreignKeyOnRelatedModel = user_id, localKey = id)
         return $this->hasMany(Box::class);
+    }
+
+    public function filterByCompany($id)
+    {
+        
     }
 }

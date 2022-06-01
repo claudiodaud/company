@@ -17,6 +17,7 @@ class CompanyFactory extends Factory
         
             'name' => $this->faker->name(),
             
+            
         ];
     }
 }
