@@ -1,7 +1,7 @@
 <div>
   <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-      {{ __('Users Index') }}
+      {{ __('Company / Users Index') }}
     </h2>
   </x-slot>
 
@@ -121,7 +121,7 @@
     </x-slot>
 
     <x-slot name="content">
-        {{ __('Are you sure you want to delete this company? Once your company account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your company account.') }}
+        {{ __('Are you sure you want to delete this user? Once your user account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete this user account.') }}
 
         <div class="mt-4" x-data="{}" x-on:confirming-delete-user.window="setTimeout(() => $refs.password.focus(), 250)">
             <x-jet-input type="password" class="mt-1 block w-3/4"
@@ -154,19 +154,23 @@
 
       <x-slot name="content">        
 
+
             <div>
                 <x-jet-label for="name" value="{{ __('Name') }}" />
-                <x-jet-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" wire:model="name" />
+                <x-jet-input class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" wire:model="name" />
+                <x-jet-input-error for="name" class="mt-2" />
             </div>
 
             <div class="mt-4">
                 <x-jet-label for="email" value="{{ __('Email') }}" />
-                <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required wire:model="email"/>
+                <x-jet-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" required wire:model="email"/>
+                <x-jet-input-error for="email" class="mt-2" />
             </div>
 
             <div class="mt-4">
                 <x-jet-label for="password" value="{{ __('Password') }}" />
-                <x-jet-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" wire:model="password" />
+                <x-jet-input class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" wire:model="password" />
+                <x-jet-input-error for="password" class="mt-2" />
             </div> 
             
          
@@ -192,12 +196,19 @@
 
       <x-slot name="content">
           
-        <div class="col-span-6 sm:col-span-4">
-            <x-jet-label for="name" value="{{ __('Name') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="text"  value="" required autofocus wire:model="name"/>
-            <x-jet-input-error for="name" class="mt-2" />
-        </div>        
-         
+            <div>
+                <x-jet-label for="name" value="{{ __('Name') }}" />
+                <x-jet-input class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" wire:model="name" />
+                <x-jet-input-error for="name" class="mt-2" />
+            </div>
+
+            <div class="mt-4">
+                <x-jet-label for="email" value="{{ __('Email') }}" />
+                <x-jet-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" required wire:model="email"/>
+                <x-jet-input-error for="email" class="mt-2" />
+            </div>
+
+                     
       </x-slot>
 
       <x-slot name="footer">
@@ -233,13 +244,13 @@
                   <hr>
                   <div class="w-full flex justify-between mt-10">                   
                     <div class="text-sm text-gray-400">{{__('Name')}}:</div>                          
-                    <div class="text-sm text-gray-600">{{$userShow->name}}</div>                            
+                    <div class="text-sm text-gray-600 uppercase">{{$userShow->name}}</div>                            
                   </div> 
-                  <div class="w-full flex justify-between mt-10">                   
-                    <div class="text-sm text-gray-400">{{__('Company')}}:</div>                          
-                    <div class="text-sm text-gray-600">{{$userShow->company->name}}</div>                            
+                  <div class="w-full flex justify-between mt-2">                   
+                    <div class="text-sm text-gray-400">{{__('Email')}}:</div>                          
+                    <div class="text-sm text-gray-600">{{$userShow->email}}</div>                            
                   </div> 
-                  
+                                    
                 </div>              
               <!-- END: Invoice -->
             @endif

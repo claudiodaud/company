@@ -26,6 +26,7 @@ class CompaniesExport implements FromView
 
         if ($this->search != null) {
             $companiesByUser = User::find(auth()->user()->id)->companies();
+            
             $companies = $companiesByUser->Where(function($query) {
                              $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')

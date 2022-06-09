@@ -86,9 +86,10 @@
 
                     </td>
                     
-                    <td class="px-6 py-4 text-right w-60">
+                    <td class="px-6 py-4 text-right w-80">
                       <a href="#" class="font-medium bg-indigo-300 text-white rounded-md px-2 hover:bg-indigo-500 px-2 py-1" 
                           wire:click="showCompany({{$company->id}})" wire:loading.attr="disabled"">Detail</a>
+                      
                       <a  href="#" 
                           class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
                           wire:click="editCompany({{$company->id}})" wire:loading.attr="disabled">Edit</a>
@@ -210,6 +211,7 @@
 
 
   <!-- Show Company Modal -->
+  @if($companyShow)
   <x-jet-dialog-modal wire:model="showCompany"> 
       <x-slot name="title">
           {{ __('Show Company Account Data') }}
@@ -218,7 +220,7 @@
       <x-slot name="content">
           
         <div class="col-span-6 sm:col-span-4">
-            @if($companyShow)
+            
               <!-- Start: Invoice -->
                 <div class="w-full">  
                   <div class="flex justify-between">
@@ -250,7 +252,7 @@
                   @endif
                 </div>              
               <!-- END: Invoice -->
-            @endif
+            
         </div>        
          
       </x-slot>
@@ -258,9 +260,14 @@
       <x-slot name="footer">
           <x-jet-secondary-button wire:click="closeShowCompany()" wire:loading.attr="disabled">
               {{ __('Return') }}
-          </x-jet-secondary-button>      
+          </x-jet-secondary-button>
+          <a class="ml-4" href="{{route('users.index', $companyShow->id)}}">
+              {{ __('Users lists') }}
+          </a>
+               
       </x-slot>
   </x-jet-dialog-modal>   
+  @endif
 
 </div>
 

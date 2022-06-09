@@ -33,7 +33,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         })->name('dashboard');
 
         // Users - Roles and Permission Modules
-        Route::get('/users-index', UserIndex::class)->name('users.index');
+        Route::get('/users-index/{id}', UserIndex::class)->name('users.index');
+        //Route::livewire('/users-index/{id}', 'users-index')->name('users.index');
         //Route::get('/roles-index', RoleIndex::class)->name('roles.index');
         //Route::get('/permissions-index', PermissionIndex::class)->name('permissions.index');
 

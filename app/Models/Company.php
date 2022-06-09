@@ -18,14 +18,18 @@ class Company extends Model
      * @var string[]
      */
     protected $fillable = [
-        'name',
+        'name','user_id',
     ];
 
+    /**
+     * Company belongs to Users.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function users()
     {
-        // belongsTo(RelatedModel, foreignKey = service_id, keyOnRelatedModel = id)
+        // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
         return $this->belongsToMany(User::class);
     }
-
     
 }

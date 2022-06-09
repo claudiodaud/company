@@ -96,9 +96,11 @@ class CompanyIndex extends Component
     {
         $this->validate();
  
-        Company::create([
+        $company = Company::create([
             'name' => $this->name,
         ]);
+
+        $company->users()->sync(auth()->user()->id);
 
         $this->name = "";
         $this->createNewCompany = false; 
@@ -161,6 +163,16 @@ class CompanyIndex extends Component
         $this->companyShow = null;        
     }
 
+    public function showUsers($companyId)
+    {
+        
+        $this->emit('renderUsers',$companyId);
+        
 
+        $this->closeShowCompany();
+
+
+
+    }
 
 }
