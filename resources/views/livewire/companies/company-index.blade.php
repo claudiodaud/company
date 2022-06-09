@@ -19,7 +19,19 @@
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
                 </div>
-                <input type="text" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-60 pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" wire:model="search">
+                <div class="flex justify-start">
+                  <input type="text" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-60 pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" wire:model="search">
+                  
+                  @if($active == true)
+                    <a wire:click.prevent="active(false)" type='button' class='inline-flex items-center ml-6 px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-red-700 uppercase tracking-widest shadow-sm hover:text-red-500 hover:bg-red-50 focus:outline-none focus:border-gary-300 focus:ring focus:ring-blue-200 active:text-red-800 active:bg-gray-50 disabled:opacity-25 transition'>
+                        {{ __('Deleted Registers') }}
+                    </a>
+                  @elseif($active == false)
+                    <a wire:click.prevent="active(true)" type='button' class='inline-flex items-center ml-6 px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-green-700 uppercase tracking-widest shadow-sm hover:text-green-500 hover:bg-green-50 focus:outline-none focus:border-gray-300 focus:ring focus:ring-blue-200 active:text-green-800 active:bg-gray-50 disabled:opacity-25 transition'>
+                        {{ __('Actives Registers') }}
+                    </a>
+                  @endif
+                </div>
 
               </div>
               <div class="pt-2">  
@@ -39,7 +51,19 @@
                 <div class="text-xl font-normal  max-w-full flex-initial bg-red-100 p-4 my-4 rounded-lg border border-red-800 flex justify-start">
                   <div class="text-sm font-base px-4 text-red-800 ">{{ __('Company register successfull deleted') }}</div>  
                 </div>        
-              </x-jet-action-message>  
+              </x-jet-action-message> 
+
+              <x-jet-action-message class="" on="forceDeleted">
+                <div class="text-xl font-normal  max-w-full flex-initial bg-fuchsia-100 p-4 my-4 rounded-lg border border-fuchsia-800 flex justify-start">
+                  <div class="text-sm font-base px-4 text-fuchsia-900 ">{{ __('Company register successfull force deleted') }}</div>  
+                </div>        
+              </x-jet-action-message> 
+
+              <x-jet-action-message class="" on="restoreCompany">
+                <div class="text-xl font-normal  max-w-full flex-initial bg-blue-100 p-4 my-4 rounded-lg border border-blue-800 flex justify-start">
+                  <div class="text-sm font-base px-4 text-blue-900 ">{{ __('Company register successfull force deleted') }}</div>  
+                </div>        
+              </x-jet-action-message> 
 
               <x-jet-action-message class="" on="created">
                 <div class="text-xl font-normal  max-w-full flex-initial bg-green-100 p-4 my-4 rounded-lg border border-green-800 ">
@@ -85,19 +109,33 @@
                         <span class="bg-gray-300 hover:bg-gray-500 text-white rounded-md px-2 py-1">{{$company->users->count()}}</span>
 
                     </td>
-                    
-                    <td class="px-6 py-4 text-right w-80">
-                      <a href="#" class="font-medium bg-indigo-300 text-white rounded-md px-2 hover:bg-indigo-500 px-2 py-1" 
-                          wire:click="showCompany({{$company->id}})" wire:loading.attr="disabled"">Detail</a>
-                      
-                      <a  href="#" 
-                          class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
-                          wire:click="editCompany({{$company->id}})" wire:loading.attr="disabled">Edit</a>
-                      
-                      <a  href="#" 
-                          class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
-                          wire:click="confirmCompanyDeletion({{$company->id}})" wire:loading.attr="disabled">Delete</a>
-                    </td>
+                    @if($active == true)
+                      <td class="px-6 py-4 text-right w-80">
+                        <a href="#" class="font-medium bg-indigo-300 text-white rounded-md px-2 hover:bg-indigo-500 px-2 py-1" 
+                            wire:click="showCompany({{$company->id}})" wire:loading.attr="disabled">{{__('Detail')}}</a>
+                        
+                        <a  href="#" 
+                            class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
+                            wire:click="editCompany({{$company->id}})" wire:loading.attr="disabled">{{__('Edit')}}</a>
+                        
+                        <a  href="#" 
+                            class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
+                            wire:click="confirmCompanyDeletion({{$company->id}})" wire:loading.attr="disabled">{{__('Delete')}}</a>
+                      </td>
+                    @else
+                      <td class="px-6 py-4 text-right w-80">
+                                            
+                        <a  href="#" 
+                            class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
+                            wire:click="confirmRestoreCompany({{$company->id}})" wire:loading.attr="disabled">{{__('Restore')}}</a>
+                        
+                        <a  href="#" 
+                            class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
+                            wire:click="confirmForceCompanyDeletion({{$company->id}})" wire:loading.attr="disabled">{{__('Force Delete')}}
+                        </a>
+
+                      </td>
+                    @endif
                   </tr>
                   @empty
                     {{-- empty expr --}}
@@ -149,6 +187,68 @@
 
         <x-jet-danger-button class="ml-3" wire:click="deleteCompany" wire:loading.attr="disabled">
             {{ __('Delete Company Account') }}
+        </x-jet-danger-button>
+    </x-slot>
+</x-jet-dialog-modal>
+
+<!-- Force Delete Company Modal -->
+<x-jet-dialog-modal wire:model="forceDeleteCompany">
+    <x-slot name="title">
+        {{ __('Force Delete Company') }}
+    </x-slot>
+
+    <x-slot name="content">
+        {{ __('Are you sure you want to force delete this company? Once your company account is force deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your company account.') }}
+
+        <div class="mt-4" x-data="{}" x-on:confirming-delete-user.window="setTimeout(() => $refs.password.focus(), 250)">
+            <x-jet-input type="password" class="mt-1 block w-3/4"
+                        placeholder="{{ __('Write your password here') }}"
+                        x-ref="password"
+                        wire:model.defer="password"
+                        wire:keydown.enter="forceDeleteCompany" />
+
+            <x-jet-input-error for="password" class="mt-2" />
+        </div>
+    </x-slot>
+
+    <x-slot name="footer">
+        <x-jet-secondary-button wire:click="$toggle('forceDeleteCompany')" wire:loading.attr="disabled">
+            {{ __('Cancel') }}
+        </x-jet-secondary-button>
+
+        <x-jet-danger-button class="ml-3" wire:click="forceDeleteCompany" wire:loading.attr="disabled">
+            {{ __('Delete Company Account') }}
+        </x-jet-danger-button>
+    </x-slot>
+</x-jet-dialog-modal>
+
+<!-- Force Delete Company Modal -->
+<x-jet-dialog-modal wire:model="restoreCompany">
+    <x-slot name="title">
+        {{ __('Restore Company') }}
+    </x-slot>
+
+    <x-slot name="content">
+        {{ __('Are you sure you want to restore this company? Once your company account is restore, all of its resources and data will be permanently restore. Please enter your password to confirm you would like to permanently restore your company account.') }}
+
+        <div class="mt-4" x-data="{}" x-on:confirming-delete-user.window="setTimeout(() => $refs.password.focus(), 250)">
+            <x-jet-input type="password" class="mt-1 block w-3/4"
+                        placeholder="{{ __('Write your password here') }}"
+                        x-ref="password"
+                        wire:model.defer="password"
+                        wire:keydown.enter="restoreCompany" />
+
+            <x-jet-input-error for="password" class="mt-2" />
+        </div>
+    </x-slot>
+
+    <x-slot name="footer">
+        <x-jet-secondary-button wire:click="$toggle('restoreCompany')" wire:loading.attr="disabled">
+            {{ __('Cancel') }}
+        </x-jet-secondary-button>
+
+        <x-jet-danger-button class="ml-3" wire:click="restoreCompany" wire:loading.attr="disabled">
+            {{ __('Restore Company Account') }}
         </x-jet-danger-button>
     </x-slot>
 </x-jet-dialog-modal>

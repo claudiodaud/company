@@ -13,11 +13,13 @@ class CompaniesExport implements FromView
     use Exportable;
 
     protected $search;
+    protected $active;
 
-    public function __construct($search)
+    public function __construct($search,$active)
     {
 
-        $this->search = $search;
+        $this->search = $search['search'];
+        $this->active = $active['active'];
 
     }
     public function view(): View
@@ -27,18 +29,42 @@ class CompaniesExport implements FromView
         if ($this->search != null) {
             $companiesByUser = User::find(auth()->user()->id)->companies();
             
-            $companies = $companiesByUser->Where(function($query) {
-                             $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
-                             })->orderBy('companies.id', 'DESC')->get();
+            if ($this->active == true) {
+
+                $companies = $companiesByUser->Where(function($query) {
+                                 $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('companies.id', 'DESC')->get();
+            }else{
+
+                 $companies = $companiesByUser->Where(function($query) {
+                                 $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('companies.id', 'DESC')->onlyTrashed()->get();
+                                       
+            }
+                       
 
             return view('exports.CompaniesExport', [
             'companies' => $companies,
             ]); 
         }else{
-           return view('exports.CompaniesExport', [
-            'companies' => User::find(auth()->user()->id)->companies()->orderBy('companies.id', 'DESC')->get(),
+
+            if ($this->active == true) {
+
+                $companies = User::find(auth()->user()->id)->companies()->orderBy('companies.id', 'DESC')->get();
+
+            }else{
+
+                $companies = User::find(auth()->user()->id)->companies()->orderBy('companies.id', 'DESC')->onlyTrashed()->get();
+
+            }    
+
+            return view('exports.CompaniesExport', [
+
+            'companies' => $companies,
             ]); 
         }
     }

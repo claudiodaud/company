@@ -22,6 +22,8 @@ class CompanyIndex extends Component
 
 
     public $deleteCompany = false;
+    public $forceDeleteCompany = false;
+    public $restoreCompany = false;
     public $companyId; 
     public $password;
 
@@ -39,6 +41,8 @@ class CompanyIndex extends Component
 
     public $search; 
 
+    public $active = true;
+
 
     protected $rules = [
         'name' => 'required|string|max:70|min:1|unique:companies,name',        
@@ -47,11 +51,23 @@ class CompanyIndex extends Component
     public function render()
     {
         $companiesByUser = User::find(auth()->user()->id)->companies();
-        $companies = $companiesByUser->Where(function($query) {
+        if ($this->active == true) {
+
+            $companies = $companiesByUser->Where(function($query) {
                              $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
-                             })->orderBy('companies.id', 'DESC')->paginate(10);
+                                })->orderBy('companies.id', 'DESC')->paginate(10);
+        }else{
+
+             $companies = $companiesByUser->Where(function($query) {
+                             $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
+                                     ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
+                                     ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
+                                })->orderBy('companies.id', 'DESC')->onlyTrashed()->paginate(10);
+                                   
+        }
+                                
 
         return view('livewire.companies.company-index', [
 
@@ -69,6 +85,18 @@ class CompanyIndex extends Component
     {
         $this->companyId = $companyId; 
         $this->deleteCompany = true;
+    }
+
+    public function confirmForceCompanyDeletion($companyId)
+    {
+        $this->companyId = $companyId; 
+        $this->forceDeleteCompany = true;
+    }
+
+    public function confirmRestoreCompany($companyId)
+    {
+        $this->companyId = $companyId; 
+        $this->restoreCompany = true;
     }
 
     public function deleteCompany()
@@ -91,6 +119,48 @@ class CompanyIndex extends Component
         }       
     }
 
+    public function forceDeleteCompany()
+    {
+
+        if (! Hash::check($this->password, Auth::user()->password)) {
+
+            throw ValidationException::withMessages([
+                'password' => [__('This password does not match our records.')],
+            ]);
+
+        }else{    
+
+            $company = Company::withTrashed()->find($this->companyId);
+            $company->forceDelete();
+            $this->forceDeleteCompany = false;
+            $this->password = null;
+            $this->companyId = null;
+            $this->emit("forceDeleted");
+
+        }       
+    }
+
+    public function restoreCompany()
+    {
+
+        if (! Hash::check($this->password, Auth::user()->password)) {
+
+            throw ValidationException::withMessages([
+                'password' => [__('This password does not match our records.')],
+            ]);
+
+        }else{    
+
+            $company = Company::withTrashed()->find($this->companyId);
+            $company->restore();
+            $this->restoreCompany = false;
+            $this->password = null;
+            $this->companyId = null;
+            $this->emit("restoreCompany");
+
+        }       
+    }
+
  
     public function saveCompany()
     {
@@ -104,6 +174,7 @@ class CompanyIndex extends Component
 
         $this->name = "";
         $this->createNewCompany = false; 
+        $this->active = true;
         $this->resetPage();
         $this->emit('created');
     }
@@ -124,6 +195,8 @@ class CompanyIndex extends Component
         
         $this->name = $company->name;
 
+        $this->active = true;
+
         $this->editCompany = true; 
     }
 
@@ -138,22 +211,20 @@ class CompanyIndex extends Component
         $this->name = null;     
         $this->company = null;
         $this->editCompany = false; 
+        $this->active = true;
         $this->emit('updated');
     }
 
     public function downloadCompanies()
-    {
-       
-       return (new CompaniesExport($this->search))->download('companies.xlsx'); 
-       
+    {        
+        return (new CompaniesExport(['search' => $this->search],['active' => $this->active]))->download('companies.xlsx'); 
     }
 
     public function showCompany($id)
     {
         $this->companyShow = Company::where('id',$id)->with('users')->first();
-        
-
         $this->showCompany = true;
+        $this->active = true;
     }
 
     public function closeShowCompany()
@@ -170,9 +241,12 @@ class CompanyIndex extends Component
         
 
         $this->closeShowCompany();
+    }
 
-
-
+    public function active($active)
+    {
+        
+        $this->active = $active;
     }
 
 }
