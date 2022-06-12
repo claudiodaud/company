@@ -59,9 +59,9 @@
                 </div>        
               </x-jet-action-message> 
 
-              <x-jet-action-message class="" on="restoreCompany">
+              <x-jet-action-message class="" on="restore">
                 <div class="text-xl font-normal  max-w-full flex-initial bg-blue-100 p-4 my-4 rounded-lg border border-blue-800 flex justify-start">
-                  <div class="text-sm font-base px-4 text-blue-900 ">{{ __('Company register successfull force deleted') }}</div>  
+                  <div class="text-sm font-base px-4 text-blue-900 ">{{ __('Company register successfull restored') }}</div>  
                 </div>        
               </x-jet-action-message> 
 
@@ -222,7 +222,7 @@
     </x-slot>
 </x-jet-dialog-modal>
 
-<!-- Force Delete Company Modal -->
+<!-- restore Company Modal -->
 <x-jet-dialog-modal wire:model="restoreCompany">
     <x-slot name="title">
         {{ __('Restore Company') }}
@@ -361,8 +361,9 @@
           <x-jet-secondary-button wire:click="closeShowCompany()" wire:loading.attr="disabled">
               {{ __('Return') }}
           </x-jet-secondary-button>
-          <a class="ml-4" href="{{route('users.index', $companyShow->id)}}">
-              {{ __('Users lists') }}
+          
+          <a href="{{route('users.index', $companyShow->id)}}" type='button' class='ml-4 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50  disabled:opacity-25 transition'>
+            {{ __('Users lists') }}
           </a>
                
       </x-slot>

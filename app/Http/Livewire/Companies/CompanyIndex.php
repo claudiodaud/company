@@ -30,7 +30,7 @@ class CompanyIndex extends Component
 
 
     public $createNewCompany = false; 
-    public $name;
+    
 
     public $companyEdit;
     public $companyShow;
@@ -40,6 +40,8 @@ class CompanyIndex extends Component
     public $showCompany = false;
 
     public $search; 
+
+    public $name;
 
     public $active = true;
 
@@ -156,7 +158,7 @@ class CompanyIndex extends Component
             $this->restoreCompany = false;
             $this->password = null;
             $this->companyId = null;
-            $this->emit("restoreCompany");
+            $this->emit("restore");
 
         }       
     }
@@ -232,15 +234,6 @@ class CompanyIndex extends Component
         $this->showCompany = false;
 
         $this->companyShow = null;        
-    }
-
-    public function showUsers($companyId)
-    {
-        
-        $this->emit('renderUsers',$companyId);
-        
-
-        $this->closeShowCompany();
     }
 
     public function active($active)

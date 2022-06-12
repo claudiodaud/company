@@ -25,7 +25,9 @@ class UserIndex extends Component
 
 
     public $deleteUser = false;
-    public $UserId; 
+    public $forceDeleteUser = false;
+    public $restoreUser = false;
+    public $userId; 
     public $passwordUser;
     public $companyId = null; 
 
@@ -47,6 +49,8 @@ class UserIndex extends Component
     public $email; 
     public $password;
 
+
+    public $active = true;
         
 
     public function mount($id)
@@ -59,11 +63,22 @@ class UserIndex extends Component
         $usersByCompany = Company::find($this->companyId)->users();
         
         
-        $users = $usersByCompany->Where(function($query) {
+        if ($this->active == true) {
+
+            $users = $usersByCompany->Where(function($query) {
                              $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
                                      ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
                                      ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
-                             })->orderBy('users.id', 'DESC')->paginate(10);
+                                })->orderBy('users.id', 'DESC')->paginate(10);
+        }else{
+
+             $users = $usersByCompany->Where(function($query) {
+                             $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
+                                     ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
+                                     ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
+                                })->orderBy('users.id', 'DESC')->onlyTrashed()->paginate(10);
+                                   
+        }
  
         
         return view('livewire.users.user-index', [
@@ -85,6 +100,18 @@ class UserIndex extends Component
         $this->deleteUser = true;
     }
 
+    public function confirmForceUserDeletion($userId)
+    {
+        $this->userId = $userId; 
+        $this->forceDeleteUser = true;
+    }
+
+    public function confirmRestoreUser($userId)
+    {
+        $this->userId = $userId; 
+        $this->restoreUser = true;
+    }
+
     public function deleteUser()
     {
 
@@ -101,8 +128,50 @@ class UserIndex extends Component
 
             $this->deleteUser = false;
             $this->passwordUser = null;
-            $this->UserId = null;
+            $this->userId = null;
             $this->emit("deleted");
+
+        }       
+    }
+
+    public function forceDeleteUser()
+    {
+
+        if (! Hash::check($this->password, Auth::user()->password)) {
+
+            throw ValidationException::withMessages([
+                'password' => [__('This password does not match our records.')],
+            ]);
+
+        }else{    
+
+            $user = User::withTrashed()->find($this->userId);
+            $user->forceDelete();
+            $this->forceDeleteUser = false;
+            $this->password = null;
+            $this->userId = null;
+            $this->emit("forceDeleted");
+
+        }       
+    }
+
+    public function restoreUser()
+    {
+
+        if (! Hash::check($this->password, Auth::user()->password)) {
+
+            throw ValidationException::withMessages([
+                'password' => [__('This password does not match our records.')],
+            ]);
+
+        }else{    
+
+            $user = User::withTrashed()->find($this->userId);
+            $user->restore();
+            $this->restoreUser = false;
+            $this->password = null;
+            $this->userId = null;
+            $this->emit("restore");
 
         }       
     }
@@ -183,7 +252,7 @@ class UserIndex extends Component
     public function downloadUsers()
     {
        
-        return (new UsersExport(['search' => $this->search], ['companyId' => $this->companyId]))->download('users.xlsx'); 
+        return (new UsersExport(['search' => $this->search], ['companyId' => $this->companyId], ['active' => $this->active]))->download('users.xlsx'); 
        
     }
 
@@ -200,6 +269,12 @@ class UserIndex extends Component
         $this->showUser = false;
 
         $this->userShow = null;        
+    }
+
+    public function active($active)
+    {
+        
+        $this->active = $active;
     }
 
 
