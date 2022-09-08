@@ -32,7 +32,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email', 'password','company_id',
+        'name', 'email', 'password',
     ];
 
     /**
@@ -42,7 +42,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'company_id',
+       
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',
@@ -74,18 +74,15 @@ class User extends Authenticatable
     }
 
     /**
-     * User has many Boxes.
+     * User belongs to Contracts.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function boxes()
+    public function contracts()
     {
-        // hasMany(RelatedModel, foreignKeyOnRelatedModel = user_id, localKey = id)
-        return $this->hasMany(Box::class);
+        // belongsTo(RelatedModel, foreignKey = contracts_id, keyOnRelatedModel = id)
+        return $this->belongsToMany(Contract::class);
     }
 
-    public function filterByCompany($id)
-    {
-        
-    }
+   
 }

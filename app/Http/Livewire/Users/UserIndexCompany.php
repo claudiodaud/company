@@ -16,9 +16,9 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Excel;
 use App\Exports\CompanyUsersExport;
-use Illuminate\Support\Facades\DB;
 
-class UserIndex extends Component
+
+class UserIndexCompany extends Component
 {
     use WithPagination;
 
@@ -53,48 +53,35 @@ class UserIndex extends Component
     public $active = true;
         
 
-    
+    public function mount($id)
+    {
+        $this->companyId = $id ; 
+    }
+
     public function render()
     {
-        //busca los usuarios de las compañias a las que pertenece el usuario 
-
-        $userWithCompanies = User::find(auth()->user()->id)->companies()->get();
-        //dd($companies);
-        $usersIds =[];
-        $companiesIds =[];
-        foreach ($userWithCompanies as $key => $company) {
-            array_push($companiesIds, $company->id);
-            foreach ($company->users as $key => $user) {
-                array_push($usersIds, $user->id);
-            }
-            
-        }
-
-        $companiesWithUsers = Company::whereIn('id',$companiesIds)->with('users')->get();
-        //dd($companiesWithUsers);
-
-
+        $usersByCompany = Company::find($this->companyId)->users();
+        
+        
         if ($this->active == true) {
 
-            $users = User::find(auth()->user()->id)->companies()->where(function ($query){
-                    $query ->whereIn('company_user.company_id',$companiesIds)
-                        ->Where('users.name', 'like', '%'.$this->search.'%')
-                        ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
-                        ->orWhere('users.updated_at', 'like', '%'.$this->search.'%'); 
-            })->orderBy('users.id', 'DESC')->paginate(10);
-
-                        
+            $users = $usersByCompany->Where(function($query) {
+                             $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
+                                     ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
+                                     ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
+                                })->orderBy('users.id', 'DESC')->paginate(10);
         }else{
 
-           $users = User::whereIn('id',$usersIds)->where(function ($query){
-                    $query->Where('users.name', 'like', '%'.$this->search.'%')
-                        ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
-                        ->orWhere('users.updated_at', 'like', '%'.$this->search.'%'); 
-            })->orderBy('users.id', 'DESC')->onlyTrashed()->paginate(10);                      
+             $users = $usersByCompany->Where(function($query) {
+                             $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
+                                     ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
+                                     ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
+                                })->orderBy('users.id', 'DESC')->onlyTrashed()->paginate(10);
+                                   
         }
  
         
-        return view('livewire.users.user-index', [
+        return view('livewire.users.user-index-company', [
 
             'users' => $users,
 

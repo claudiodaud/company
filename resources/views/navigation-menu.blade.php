@@ -19,10 +19,12 @@
 
                 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('companies.index') }}" :active="request()->routeIs(['companies.index','users.index'])">
+                    <x-jet-nav-link href="{{ route('companies.index') }}" 
+                    :active="request()->routeIs(['companies.index','users.index.company','contracts.index.company'])">
                         {{ __('Companies') }}
-                    </x-jet-nav-link>
+                    </x-jet-nav-link>                    
                 </div>
+               
 
                 
 

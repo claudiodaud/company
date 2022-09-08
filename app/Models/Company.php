@@ -22,6 +22,19 @@ class Company extends Model
         'name','user_id',
     ];
 
+    
+    
+    /**
+     * Company has many Contract.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function contracts()
+    {
+        // hasMany(RelatedModel, foreignKeyOnRelatedModel = company_id, localKey = id)
+        return $this->hasMany(Contract::class);
+    }
+
     /**
      * Company belongs to Users.
      *
@@ -32,5 +45,4 @@ class Company extends Model
         // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
         return $this->belongsToMany(User::class);
     }
-    
 }
