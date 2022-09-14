@@ -1,9 +1,10 @@
 <div>
   <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-      {{ __('Companies Index') }}
+      <span class="text-gray-400 uppercase">{{ __(App\Models\Company::find($companyId)->name.' /') }}</span> 
+      <span class="text-gray-700">{{__(' Roles Index')}}</span>
     </h2>
-  </x-slot>
+  </x-slot>   
 
   <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -35,12 +36,15 @@
 
               </div>
               <div class="pt-2">  
-                <a wire:click="$toggle('createNewCompany')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
+                <a wire:click="$toggle('createNewRole')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
                     {{ __('Create New') }}
                 </a>
 
                 <a wire:click="downloadCompanies" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
                     {{ __('Download') }}
+                </a>
+                <a href="{{ route('companies.index') }}" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
+                    {{ __('Return to company') }}
                 </a>
               </div>
             </div>
@@ -49,31 +53,31 @@
               {{--Flash Messages--}}
               <x-jet-action-message class="" on="deleted">
                 <div class="text-xl font-normal  max-w-full flex-initial bg-red-100 p-4 my-4 rounded-lg border border-red-800 flex justify-start">
-                  <div class="text-sm font-base px-4 text-red-800 ">{{ __('Company register successfull deleted') }}</div>  
+                  <div class="text-sm font-base px-4 text-red-800 ">{{ __('Role register successfull deleted') }}</div>  
                 </div>        
               </x-jet-action-message> 
 
               <x-jet-action-message class="" on="forceDeleted">
                 <div class="text-xl font-normal  max-w-full flex-initial bg-fuchsia-100 p-4 my-4 rounded-lg border border-fuchsia-800 flex justify-start">
-                  <div class="text-sm font-base px-4 text-fuchsia-900 ">{{ __('Company register successfull force deleted') }}</div>  
+                  <div class="text-sm font-base px-4 text-fuchsia-900 ">{{ __('Role register successfull force deleted') }}</div>  
                 </div>        
               </x-jet-action-message> 
 
               <x-jet-action-message class="" on="restore">
                 <div class="text-xl font-normal  max-w-full flex-initial bg-blue-100 p-4 my-4 rounded-lg border border-blue-800 flex justify-start">
-                  <div class="text-sm font-base px-4 text-blue-900 ">{{ __('Company register successfull restored') }}</div>  
+                  <div class="text-sm font-base px-4 text-blue-900 ">{{ __('Role register successfull restored') }}</div>  
                 </div>        
               </x-jet-action-message> 
 
               <x-jet-action-message class="" on="created">
                 <div class="text-xl font-normal  max-w-full flex-initial bg-green-100 p-4 my-4 rounded-lg border border-green-800 ">
-                  <div class="text-sm font-base px-4 text-green-800 ">{{ __('Company register successfull created') }}</div>  
+                  <div class="text-sm font-base px-4 text-green-800 ">{{ __('Role register successfull created') }}</div>  
                 </div>        
               </x-jet-action-message>  
 
               <x-jet-action-message class="" on="updated">
                 <div class="text-xl font-normal  max-w-full flex-initial bg-indigo-100 p-4 my-4 rounded-lg border border-indigo-800 ">
-                  <div class="text-sm font-base px-4 text-indigo-800 ">{{ __('Company register successfull update') }}</div>  
+                  <div class="text-sm font-base px-4 text-indigo-800 ">{{ __('Role register successfull update') }}</div>  
                 </div>        
               </x-jet-action-message> 
 
@@ -88,76 +92,57 @@
                       {{ __('Name')}}
                     </th>
                     <th scope="col" class="px-6 py-3">
-                      {{ __('Users')}}
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                      {{ __('Contracts')}}
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                      {{ __('Roles')}}
-                    </th>
+                      {{ __('Permissions')}}
+                    </th>                    
                     <th scope="col" class="px-6 py-3 rounded-tr-lg rounded-br-lg text-right">
                       {{__('Actions')}}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  @forelse ($companies as $company)
+                  @forelse ($roles as $role)
                     <tr class="bg-white border-b hover:bg-gray-100 even:bg-gray-50">
                     <td class="px-6 py-4 w-10">
-                      #{{$company->id}}
+                      #{{$role->id}}
                     </td>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap truncate ... ">
-                      {{$company->name}}
+                      {{$role->name}}
                     </th>
+
                     <td class="px-6 py-4 w-30">
                                             
-                        <a href="{{route('users.index.company', $company->id)}}" type='button' 
+                        <a wire:click="addRemovePermissions({{$role->id}})" href="#{{--route('users.index.company', $contract->company->id)--}}" 
+                           type='button' 
                            class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1'>
-                          {{$company->users->count()}} {{ __('Users') }}
+                          {{$role->permissions->count()}} {{ __('Permissions') }}
                         </a>
 
                     </td>
-                    <td class="px-6 py-4 w-30">
-                                             
-                        <a href="{{route('contracts.index.company', $company->id)}}" type='button' 
-                           class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1'>
-                          {{$company->contracts->count()}} {{ __('Contracts') }}
-                        </a>
-
-                    </td>
-                    <td class="px-6 py-4 w-30">
-                                             
-                        <a href="{{route('roles.index.company', $company->id)}}" type='button' 
-                           class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1'>
-                          {{$company->roles->count()}} {{ __('Roles') }}
-                        </a>
-
-                    </td>
+                    
                     @if($active == true)
                       <td class="px-6 py-4 text-right w-120">
                         
                         <a href="#" class="font-medium bg-indigo-300 text-white rounded-md px-2 hover:bg-indigo-500 px-2 py-1" 
-                            wire:click="showCompany({{$company->id}})" wire:loading.attr="disabled">{{__('Detail')}}</a>
+                            wire:click="showRole({{$role->id}})" wire:loading.attr="disabled">{{__('Detail')}}</a>
                         
                         <a  href="#" 
                             class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
-                            wire:click="editCompany({{$company->id}})" wire:loading.attr="disabled">{{__('Edit')}}</a>
+                            wire:click="editRole({{$role->id}})" wire:loading.attr="disabled">{{__('Edit')}}</a>
                         
                         <a  href="#" 
                             class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
-                            wire:click="confirmCompanyDeletion({{$company->id}})" wire:loading.attr="disabled">{{__('Delete')}}</a>
+                            wire:click="confirmRoleDeletion({{$role->id}})" wire:loading.attr="disabled">{{__('Delete')}}</a>
                       </td>
                     @else
                       <td class="px-6 py-4 text-right w-80">
                                             
                         <a  href="#" 
                             class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
-                            wire:click="confirmRestoreCompany({{$company->id}})" wire:loading.attr="disabled">{{__('Restore')}}</a>
+                            wire:click="confirmRestoreRole({{$role->id}})" wire:loading.attr="disabled">{{__('Restore')}}</a>
                         
                         <a  href="#" 
                             class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
-                            wire:click="confirmForceCompanyDeletion({{$company->id}})" wire:loading.attr="disabled">{{__('Force Delete')}}
+                            wire:click="confirmForceRoleDeletion({{$role->id}})" wire:loading.attr="disabled">{{__('Force Delete')}}
                         </a>
 
                       </td>
@@ -173,7 +158,7 @@
             </div>
             {{--Pagination--}}
             <div class="p-4">
-            {{$companies->links()}}
+            {{$roles->links()}}
             </div>
           </div>
 
@@ -186,104 +171,104 @@
 
  
 
-<!-- Delete Company Modal -->
-<x-jet-dialog-modal wire:model="deleteCompany">
+<!-- Delete Role Modal -->
+<x-jet-dialog-modal wire:model="deleteRole">
     <x-slot name="title">
-        {{ __('Delete Company') }}
+        {{ __('Delete Role') }}
     </x-slot>
 
     <x-slot name="content">
-        {{ __('Are you sure you want to delete this company? Once your company account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your company account.') }}
+        {{ __('Are you sure you want to delete this role? Once your role account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your role account.') }}
 
         <div class="mt-4" x-data="{}" x-on:confirming-delete-user.window="setTimeout(() => $refs.password.focus(), 250)">
             <x-jet-input type="password" class="mt-1 block w-3/4"
                         placeholder="{{ __('Write your password here') }}"
                         x-ref="password"
                         wire:model.defer="password"
-                        wire:keydown.enter="deleteCompany" />
+                        wire:keydown.enter="deleteRole" />
 
             <x-jet-input-error for="password" class="mt-2" />
         </div>
     </x-slot>
 
     <x-slot name="footer">
-        <x-jet-secondary-button wire:click="$toggle('deleteCompany')" wire:loading.attr="disabled">
+        <x-jet-secondary-button wire:click="$toggle('deleteRole')" wire:loading.attr="disabled">
             {{ __('Cancel') }}
         </x-jet-secondary-button>
 
-        <x-jet-danger-button class="ml-3" wire:click="deleteCompany" wire:loading.attr="disabled">
-            {{ __('Delete Company Account') }}
+        <x-jet-danger-button class="ml-3" wire:click="deleteRole" wire:loading.attr="disabled">
+            {{ __('Delete Role Account') }}
         </x-jet-danger-button>
     </x-slot>
 </x-jet-dialog-modal>
 
-<!-- Force Delete Company Modal -->
-<x-jet-dialog-modal wire:model="forceDeleteCompany">
+<!-- Force Delete Role Modal -->
+<x-jet-dialog-modal wire:model="forceDeleteRole">
     <x-slot name="title">
-        {{ __('Force Delete Company') }}
+        {{ __('Force Delete Role') }}
     </x-slot>
 
     <x-slot name="content">
-        {{ __('Are you sure you want to force delete this company? Once your company account is force deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your company account.') }}
+        {{ __('Are you sure you want to force delete this role? Once your role account is force deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your role account.') }}
 
         <div class="mt-4" x-data="{}" x-on:confirming-delete-user.window="setTimeout(() => $refs.password.focus(), 250)">
             <x-jet-input type="password" class="mt-1 block w-3/4"
                         placeholder="{{ __('Write your password here') }}"
                         x-ref="password"
                         wire:model.defer="password"
-                        wire:keydown.enter="forceDeleteCompany" />
+                        wire:keydown.enter="forceDeleteRole" />
 
             <x-jet-input-error for="password" class="mt-2" />
         </div>
     </x-slot>
 
     <x-slot name="footer">
-        <x-jet-secondary-button wire:click="$toggle('forceDeleteCompany')" wire:loading.attr="disabled">
+        <x-jet-secondary-button wire:click="$toggle('forceDeleteRole')" wire:loading.attr="disabled">
             {{ __('Cancel') }}
         </x-jet-secondary-button>
 
-        <x-jet-danger-button class="ml-3" wire:click="forceDeleteCompany" wire:loading.attr="disabled">
-            {{ __('Delete Company Account') }}
+        <x-jet-danger-button class="ml-3" wire:click="forceDeleteRole" wire:loading.attr="disabled">
+            {{ __('Delete Role Account') }}
         </x-jet-danger-button>
     </x-slot>
 </x-jet-dialog-modal>
 
-<!-- restore Company Modal -->
-<x-jet-dialog-modal wire:model="restoreCompany">
+<!-- restore Role Modal -->
+<x-jet-dialog-modal wire:model="restoreRole">
     <x-slot name="title">
-        {{ __('Restore Company') }}
+        {{ __('Restore Role') }}
     </x-slot>
 
     <x-slot name="content">
-        {{ __('Are you sure you want to restore this company? Once your company account is restore, all of its resources and data will be permanently restore. Please enter your password to confirm you would like to permanently restore your company account.') }}
+        {{ __('Are you sure you want to restore this role? Once your role account is restore, all of its resources and data will be permanently restore. Please enter your password to confirm you would like to permanently restore your role account.') }}
 
         <div class="mt-4" x-data="{}" x-on:confirming-delete-user.window="setTimeout(() => $refs.password.focus(), 250)">
             <x-jet-input type="password" class="mt-1 block w-3/4"
                         placeholder="{{ __('Write your password here') }}"
                         x-ref="password"
                         wire:model.defer="password"
-                        wire:keydown.enter="restoreCompany" />
+                        wire:keydown.enter="restoreRole" />
 
             <x-jet-input-error for="password" class="mt-2" />
         </div>
     </x-slot>
 
     <x-slot name="footer">
-        <x-jet-secondary-button wire:click="$toggle('restoreCompany')" wire:loading.attr="disabled">
+        <x-jet-secondary-button wire:click="$toggle('restoreRole')" wire:loading.attr="disabled">
             {{ __('Cancel') }}
         </x-jet-secondary-button>
 
-        <x-jet-danger-button class="ml-3" wire:click="restoreCompany" wire:loading.attr="disabled">
-            {{ __('Restore Company Account') }}
+        <x-jet-danger-button class="ml-3" wire:click="restoreRole" wire:loading.attr="disabled">
+            {{ __('Restore Role Account') }}
         </x-jet-danger-button>
     </x-slot>
 </x-jet-dialog-modal>
 
 
-<!-- Create New Company Modal -->
-  <x-jet-dialog-modal wire:model="createNewCompany"> 
+<!-- Create New Role Modal -->
+  <x-jet-dialog-modal wire:model="createNewRole"> 
       <x-slot name="title">
-          {{ __('Create New Company') }}
+          {{ __('Create New Role') }}
       </x-slot>
 
       <x-slot name="content">
@@ -297,21 +282,21 @@
       </x-slot>
 
       <x-slot name="footer">
-          <x-jet-secondary-button wire:click="$toggle('createNewCompany')" wire:loading.attr="disabled">
+          <x-jet-secondary-button wire:click="$toggle('createNewRole')" wire:loading.attr="disabled">
               {{ __('Cancel') }}
           </x-jet-secondary-button>
 
-          <x-jet-danger-button class="ml-3" wire:click="saveCompany" wire:loading.attr="disabled">
-              {{ __('Create Company Account') }}
+          <x-jet-danger-button class="ml-3" wire:click="saveRole" wire:loading.attr="disabled">
+              {{ __('Create Role Account') }}
           </x-jet-danger-button>
       </x-slot>
   </x-jet-dialog-modal>
 
 
-  <!-- Edit Company Modal -->
-  <x-jet-dialog-modal wire:model="editCompany"> 
+  <!-- Edit Role Modal -->
+  <x-jet-dialog-modal wire:model="editRole"> 
       <x-slot name="title">
-          {{ __('Update Company Account Data') }}
+          {{ __('Update Role Account Data') }}
       </x-slot>
 
       <x-slot name="content">
@@ -325,22 +310,22 @@
       </x-slot>
 
       <x-slot name="footer">
-          <x-jet-secondary-button wire:click="$toggle('editCompany')" wire:loading.attr="disabled">
+          <x-jet-secondary-button wire:click="$toggle('editRole')" wire:loading.attr="disabled">
               {{ __('Cancel') }}
           </x-jet-secondary-button>
 
-          <x-jet-danger-button class="ml-3" wire:click="updateCompany" wire:loading.attr="disabled">
-              {{ __('Update Company Account Data') }}
+          <x-jet-danger-button class="ml-3" wire:click="updateRole" wire:loading.attr="disabled">
+              {{ __('Update Role Account Data') }}
           </x-jet-danger-button>
       </x-slot>
   </x-jet-dialog-modal>
 
 
-  <!-- Show Company Modal -->
-  @if($companyShow)
-  <x-jet-dialog-modal wire:model="showCompany"> 
+  <!-- Show Role Modal -->
+  @if($roleShow)
+  <x-jet-dialog-modal wire:model="showRole"> 
       <x-slot name="title">
-          {{ __('Show Company Account Data') }}
+          {{ __('Show Role Account Data') }}
       </x-slot>
 
       <x-slot name="content">
@@ -350,32 +335,17 @@
               <!-- Start: Invoice -->
                 <div class="w-full">  
                   <div class="flex justify-between">
-                    <div class="text-xs text-gray-400">{{__('Register')}} #{{$companyShow->id}}</div>
-                    <div class="text-xs text-gray-400">{{__('Created at')}}: {{$companyShow->created_at}}</div>
+                    <div class="text-xs text-gray-400">{{__('Register')}} #{{$roleShow->id}}</div>
+                    <div class="text-xs text-gray-400">{{__('Created at')}}: {{$roleShow->created_at}}</div>
 
                   </div>            
                   
                   <hr>
                   <div class="w-full flex justify-between mt-10">                   
                     <div class="text-sm text-gray-400">{{__('Name')}}:</div>                          
-                    <div class="text-sm text-gray-600">{{$companyShow->name}}</div>                            
+                    <div class="text-sm text-gray-600">{{$roleShow->name}}</div>                            
                   </div> 
-                  @if(count($companyShow->users) > 0 )
-                  <hr>                    
-                  <div>
-                    <div class="mt-6">{{__('Associated users')}}</div>
-                    <div>
-                      @foreach ($companyShow->users as $user)
-                        <div class="w-full flex justify-between mt-4">                   
-                          <div class="text-xs text-gray-600">{{__('Name')}}: {{$user->name}}<br>
-                            <div class="text-xs text-gray-400">{{__('Email')}}: {{$user->email}}</div>  
-                          </div>                          
-                                                    
-                        </div>   
-                      @endforeach
-                    </div>
-                  </div>
-                  @endif
+                  
                 </div>              
               <!-- END: Invoice -->
             
@@ -384,7 +354,7 @@
       </x-slot>
 
       <x-slot name="footer">
-          <x-jet-secondary-button wire:click="closeShowCompany()" wire:loading.attr="disabled">
+          <x-jet-secondary-button wire:click="closeShowRole()" wire:loading.attr="disabled">
               {{ __('Return') }}
           </x-jet-secondary-button>
           
@@ -394,5 +364,67 @@
   </x-jet-dialog-modal>   
   @endif
 
-</div>
+   <!-- Add / Remove Contract Modal -->
+  <x-jet-dialog-modal wire:model="addRemovePermissions" maxWidth="xl"> 
+      <x-slot name="title">
+          {{ __('Add or remove permissions to ') }}
+      </x-slot>
 
+      <x-slot name="content">
+          
+        <div class="col-span-6 sm:col-span-4">
+            @if($permissionsAddByRole)
+              <!-- Start: Invoice -->
+                <div class="w-full">  
+                            
+                   @foreach($permissionsAddByRole->permissions as $permission)
+                      
+
+                        <hr>
+                        <div class="w-full flex justify-between mt-10">                   
+                          <div class="text-sm text-gray-400">
+                            <span class="uppercase"><strong>{{$permission->name}}</strong></span></div>                          
+                          <div class="text-sm text-gray-600 uppercase">
+                            <x-jet-danger-button class="mb-4" 
+                            wire:click="removePermissionToRole({{$permission->id}},{{$permissionsAddByRole->id}})" 
+                            wire:loading.attr="disabled">
+                                {{ __('Remove') }}
+                            </x-jet-danger-button>
+                          </div>                            
+                        </div> 
+                      
+                    @endforeach 
+                  
+                  
+                    @foreach($permissionsForAddByRole as $permission)
+                      
+                        <hr>
+                        <div class="w-full flex justify-between mt-10">                   
+                          <div class="text-sm text-gray-400">
+                            <span class="uppercase"><strong>{{$permission->name}}</strong></span></div>                          
+                          <div class="text-sm text-gray-600 uppercase"> 
+                            <x-jet-secondary-button 
+                            wire:click="addPermissionToRole({{$permission->id}},{{$permissionsAddByRole->id}})"
+                            wire:loading.attr="disabled">
+                                {{ __('Add') }}
+                            </x-jet-secondary-button> 
+                          </div>                            
+                        </div> 
+                      
+                    @endforeach
+                                  
+                </div>              
+              <!-- END: Invoice -->
+            @endif
+            
+        </div>        
+         
+      </x-slot>
+
+      <x-slot name="footer">
+          <x-jet-secondary-button wire:click="closeAddRemovePermission()" wire:loading.attr="disabled">
+              {{ __('Return') }}
+          </x-jet-secondary-button>      
+      </x-slot>
+  </x-jet-dialog-modal>   
+</div>

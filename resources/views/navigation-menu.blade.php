@@ -23,10 +23,7 @@
                     :active="request()->routeIs(['companies.index','users.index.company','contracts.index.company'])">
                         {{ __('Companies') }}
                     </x-jet-nav-link>                    
-                </div>
-               
-
-                
+                </div>                    
 
             </div>
 
