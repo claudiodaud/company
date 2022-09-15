@@ -379,7 +379,6 @@
                             
                    @foreach($permissionsAddByRole->permissions as $permission)
                       
-
                         <hr>
                         <div class="w-full flex justify-between mt-10">                   
                           <div class="text-sm text-gray-400">

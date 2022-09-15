@@ -4,8 +4,11 @@ namespace App\Models;
 
 use App\Models\Box;
 use App\Models\Company;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -13,7 +16,6 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
@@ -82,6 +84,29 @@ class User extends Authenticatable
     {
         // belongsTo(RelatedModel, foreignKey = contracts_id, keyOnRelatedModel = id)
         return $this->belongsToMany(Contract::class);
+    }
+
+    
+    /**
+     * User morphs to many (many-to-many) .
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function roles()
+    {
+        // morphToMany(RelatedModel, morphName, pivotTable = ables, thisKeyOnPivot = able_id, otherKeyOnPivot = _id)
+        return $this->morphToMany(Role::class, 'model','model_has_roles','model_id','role_id');
+    }
+
+    /**
+     * User morphs to many (many-to-many) .
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function permissions()
+    {
+        // morphToMany(RelatedModel, morphName, pivotTable = ables, thisKeyOnPivot = able_id, otherKeyOnPivot = _id)
+        return $this->morphToMany(Permission::class, 'model','model_has_permissions','model_id','permission_id');
     }
 
    

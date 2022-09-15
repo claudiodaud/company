@@ -37,8 +37,17 @@ class Role extends Model
         return $this->belongsToMany(Company::class);
     }
 
-    
-
-    
    
+    
+    
+    /**
+     * Role belongs to .
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function permissions()
+    {
+        // belongsTo(RelatedModel, foreignKey = _id, keyOnRelatedModel = id)
+        return $this->belongsToMany(Permission::class,'role_has_permissions','role_id');
+    }
 }

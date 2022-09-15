@@ -4,7 +4,9 @@ namespace App\Http\Livewire\Users;
 
 
 
+use App\Exports\CompanyUsersExport;
 use App\Models\Company;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +17,6 @@ use Illuminate\Validation\withMessages;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Excel;
-use App\Exports\CompanyUsersExport;
 
 
 class UserIndexCompany extends Component
@@ -51,11 +52,33 @@ class UserIndexCompany extends Component
 
 
     public $active = true;
+
+    //Add and Remove Users
+    public $addRemoveRoles;
+    public $rolesAddByUser;
+    public $roles; 
+
+
+    public $permissions = [];
         
 
     public function mount($id)
     {
         $this->companyId = $id ; 
+        $userWithRolesAndPermissions = User::where('id',auth()->user()->id)->with('roles')->first();
+        $permissions = [];
+        foreach ($userWithRolesAndPermissions->roles as $key => $role) {
+           
+            $role = Role::where('id',$role->id)->with('permissions')->first();
+                
+                foreach ($role->permissions as $key => $permission) {
+                    array_push($permissions,$permission->name);
+                }                
+        }
+
+        $this->permissions = array_unique($permissions);
+
+        //dd($this->permissions);
     }
 
     public function render()
@@ -269,6 +292,67 @@ class UserIndexCompany extends Component
         $this->showUser = false;
 
         $this->userShow = null;        
+    }
+
+    public function addRemoveRoles($user_id)
+    {
+           
+        $this->rolesAddByUser = User::where('id',$user_id)->with('roles')->first();
+       
+        $rolesAddIds = [];
+        foreach ($this->rolesAddByUser->roles as $key => $role) {
+            array_push($rolesAddIds,$role->id);
+        }
+        
+
+        $this->roles = Role::all();
+        $rolesForAddIds = [];
+        foreach ($this->roles as $key => $role) {
+            array_push($rolesForAddIds,$role->id);
+        }
+        
+        
+        foreach($rolesAddIds as $role){
+            $remove = array_search($role, $rolesForAddIds);
+            unset($rolesForAddIds[$remove]);
+        }
+
+       
+    
+        $this->rolesForAddByUser = Role::whereIn('id', $rolesForAddIds)->get();
+
+        
+        $this->addRemoveRoles = true;
+    }
+
+    public function closeAddRemoveRoles()
+    {
+        $this->addRemoveRoles = false;           
+    }
+
+    public function addRoleToUser($role_id,$user_id)
+    {
+        
+        $user = User::find($user_id);
+        
+        $user->roles()->attach($role_id);
+        
+        $this->mount($this->companyId);
+        
+        $this->addRemoveRoles($user_id);
+
+    }
+
+    public function removeRoleToUser($role_id,$user_id)
+    {
+        $user = User::find($user_id);
+        
+        $user->roles()->detach($role_id);
+        
+        $this->mount($this->companyId);
+        
+        $this->addRemoveRoles($user_id);
+
     }
 
     public function active($active)
