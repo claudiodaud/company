@@ -6,6 +6,7 @@ namespace App\Http\Livewire\Users;
 
 use App\Exports\CompanyUsersExport;
 use App\Models\Company;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -58,6 +59,12 @@ class UserIndexCompany extends Component
     public $rolesAddByUser;
     public $roles; 
 
+    //Add and Remove Users
+    public $addRemovePermissions;
+    public $permissionsAddByUser;
+    public $permissionsForAddByUser;
+     
+
 
     public $permissions = [];
         
@@ -65,8 +72,14 @@ class UserIndexCompany extends Component
     public function mount($id)
     {
         $this->companyId = $id ; 
+
         $userWithRolesAndPermissions = User::where('id',auth()->user()->id)->with('roles')->first();
+        $userWithDirectsPermissions = User::where('id',auth()->user()->id)->with('permissions')->first();
+        
+        
         $permissions = [];
+
+        //find permissions for roles
         foreach ($userWithRolesAndPermissions->roles as $key => $role) {
            
             $role = Role::where('id',$role->id)->with('permissions')->first();
@@ -74,6 +87,13 @@ class UserIndexCompany extends Component
                 foreach ($role->permissions as $key => $permission) {
                     array_push($permissions,$permission->name);
                 }                
+        }
+
+        //find directs permissions
+        foreach ($userWithDirectsPermissions->permissions as $key => $permission) {
+        
+            array_push($permissions,$permission->name);
+                         
         }
 
         $this->permissions = array_unique($permissions);
@@ -352,6 +372,67 @@ class UserIndexCompany extends Component
         $this->mount($this->companyId);
         
         $this->addRemoveRoles($user_id);
+
+    }
+
+     public function addRemovePermissions($user_id)
+    {
+           
+        $this->permissionsAddByUser = User::find($user_id);
+       
+        $permissionsAddIds = [];
+        foreach ($this->permissionsAddByUser->permissions as $key => $permission) {
+            array_push($permissionsAddIds,$permission->id);
+        }
+        
+
+        $permissions = Permission::all();
+        $permissionsForAddIds = [];
+        foreach ($permissions as $key => $permission) {
+            array_push($permissionsForAddIds,$permission->id);
+        }
+        
+        
+        foreach($permissionsAddIds as $permission){
+            $remove = array_search($permission, $permissionsForAddIds);
+            unset($permissionsForAddIds[$remove]);
+        }
+
+       
+    
+        $this->permissionsForAddByUser = Permission::whereIn('id', $permissionsForAddIds)->get();
+
+        
+        $this->addRemovePermissions = true;
+    }
+
+    public function closeAddRemovePermission()
+    {
+        $this->addRemovePermissions = false;           
+    }
+
+    public function addPermissionToUser($permission_id,$user_id)
+    {
+        
+        $user = User::find($user_id);
+        
+        $user->permissions()->attach($permission_id);
+        
+        $this->mount($this->companyId);
+
+        $this->addRemovePermissions($user_id);
+
+    }
+
+    public function removePermissionToUser($permission_id,$user_id)
+    {
+        $user = User::find($user_id);
+        
+        $user->permissions()->detach($permission_id);
+
+        $this->mount($this->companyId);
+        
+        $this->addRemovePermissions($user_id);
 
     }
 

@@ -98,16 +98,7 @@ class User extends Authenticatable
         return $this->morphToMany(Role::class, 'model','model_has_roles','model_id','role_id');
     }
 
-    /**
-     * User morphs to many (many-to-many) .
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function permissions()
-    {
-        // morphToMany(RelatedModel, morphName, pivotTable = ables, thisKeyOnPivot = able_id, otherKeyOnPivot = _id)
-        return $this->morphToMany(Permission::class, 'model','model_has_permissions','model_id','permission_id');
-    }
+    
 
    
 }

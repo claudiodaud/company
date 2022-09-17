@@ -14,6 +14,7 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
+        //User permissions
         Permission::create(['name' => 'user.viewModule','guard_name' => 'web']);
         Permission::create(['name' => 'user.viewDeleted','guard_name' => 'web']);
         Permission::create(['name' => 'user.filter','guard_name' => 'web']);
@@ -24,8 +25,56 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'user.delete','guard_name' => 'web']);
         Permission::create(['name' => 'user.restore','guard_name' => 'web']);
         Permission::create(['name' => 'user.forceDelete','guard_name' => 'web']);
-        Permission::create(['name' => 'user.addRemoveRoles','guard_name' => 'web']);
-        Permission::create(['name' => 'user.addRemoveDirectPermissions','guard_name' => 'web']);
+        Permission::create(['name' => 'user.addRoles','guard_name' => 'web']);
+        Permission::create(['name' => 'user.removeRoles','guard_name' => 'web']);
+        Permission::create(['name' => 'user.addDirectPermissions','guard_name' => 'web']);
+        Permission::create(['name' => 'user.removeDirectPermissions','guard_name' => 'web']);
+
+        //Company permissions
+        Permission::create(['name' => 'company.viewModule','guard_name' => 'web']);
+        Permission::create(['name' => 'company.viewDeleted','guard_name' => 'web']);
+        Permission::create(['name' => 'company.filter','guard_name' => 'web']);
+        Permission::create(['name' => 'company.create','guard_name' => 'web']);
+        Permission::create(['name' => 'company.download','guard_name' => 'web']);
+        Permission::create(['name' => 'company.show','guard_name' => 'web']);
+        Permission::create(['name' => 'company.edit','guard_name' => 'web']);
+        Permission::create(['name' => 'company.delete','guard_name' => 'web']);
+        Permission::create(['name' => 'company.restore','guard_name' => 'web']);
+        Permission::create(['name' => 'company.forceDelete','guard_name' => 'web']);
+        Permission::create(['name' => 'company.addUsers','guard_name' => 'web']);
+        Permission::create(['name' => 'company.removeUsers','guard_name' => 'web']);
+        Permission::create(['name' => 'company.addContracts','guard_name' => 'web']);
+        Permission::create(['name' => 'company.removeContracts','guard_name' => 'web']);
+        Permission::create(['name' => 'company.addRoles','guard_name' => 'web']);        
+        Permission::create(['name' => 'company.removeRoles','guard_name' => 'web']);
+
+        //Roles Permissions
+        Permission::create(['name' => 'role.viewModule','guard_name' => 'web']);
+        Permission::create(['name' => 'role.viewDeleted','guard_name' => 'web']);
+        Permission::create(['name' => 'role.filter','guard_name' => 'web']);
+        Permission::create(['name' => 'role.create','guard_name' => 'web']);
+        Permission::create(['name' => 'role.download','guard_name' => 'web']);
+        Permission::create(['name' => 'role.show','guard_name' => 'web']);
+        Permission::create(['name' => 'role.edit','guard_name' => 'web']);
+        Permission::create(['name' => 'role.delete','guard_name' => 'web']);
+        Permission::create(['name' => 'role.restore','guard_name' => 'web']);
+        Permission::create(['name' => 'role.forceDelete','guard_name' => 'web']);
+        Permission::create(['name' => 'role.addPermissions','guard_name' => 'web']);
+        Permission::create(['name' => 'role.removePermissions','guard_name' => 'web']);
+
+        //Contract Permissions
+        Permission::create(['name' => 'contract.viewModule','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.viewDeleted','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.filter','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.create','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.download','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.show','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.edit','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.delete','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.restore','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.forceDelete','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.addUsers','guard_name' => 'web']);
+        Permission::create(['name' => 'contract.removeUser','guard_name' => 'web']);
 
     }
 }

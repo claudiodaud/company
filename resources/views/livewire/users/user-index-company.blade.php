@@ -95,6 +95,9 @@
                     <th scope="col" class="px-6 py-3">
                       {{ __('Roles')}}
                     </th>
+                    <th scope="col" class="px-6 py-3">
+                      {{ __('Permissions')}}
+                    </th>
                     <th scope="col" class="px-6 py-3 rounded-tr-lg rounded-br-lg text-right">
                       {{__('Actions')}}
                     </th>
@@ -117,6 +120,16 @@
                         </a>
 
                     </td>
+
+                    <td class="px-6 py-4 w-30">
+                                             
+                        <a wire:click="addRemovePermissions({{$user->id}})" href="#" type='button' 
+                           class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1'>
+                          {{$user->permissions->count()}} {{ __('Directs Permissions') }}
+                        </a>
+
+                    </td>
+
                     
                     @if($active == true)
                       <td class="px-6 py-4 text-right w-80">
@@ -401,7 +414,9 @@
                         <hr>
                         <div class="w-full flex justify-between mt-10">                   
                           <div class="text-sm text-gray-400">
-                            <span class="uppercase"><strong>{{$role->name}}</strong></span></div>                          
+                            <span class="uppercase"><strong>{{$role->name}} </strong></span>
+                            <p>{{ __('you add '.$role->permissions->count().' permissions through this role')}}</p>
+                          </div>                          
                           <div class="text-sm text-gray-600 uppercase">
                             <x-jet-danger-button class="mb-4" 
                             wire:click="removeRoleToUser({{$role->id}},{{$rolesAddByUser->id}})" 
@@ -441,6 +456,69 @@
 
       <x-slot name="footer">
           <x-jet-secondary-button wire:click="closeAddRemoveRoles()" wire:loading.attr="disabled">
+              {{ __('Return') }}
+          </x-jet-secondary-button>      
+      </x-slot>
+  </x-jet-dialog-modal>   
+
+  <!-- Add / Remove Role Modal -->
+  <x-jet-dialog-modal wire:model="addRemovePermissions" maxWidth="xl"> 
+      <x-slot name="title">
+          {{ __('Add or remove permissions to ') }}
+      </x-slot>
+
+      <x-slot name="content">
+          
+        <div class="col-span-6 sm:col-span-4">
+            @if($permissionsAddByUser)
+              <!-- Start: Invoice -->
+                <div class="w-full">  
+                         
+                   @foreach($permissionsAddByUser->permissions as $permission)
+                      
+                        <hr>
+                        <div class="w-full flex justify-between mt-10">                   
+                          <div class="text-sm text-gray-400">
+                            <span class="uppercase"><strong>{{$permission->name}}</strong></span></div>                          
+                          <div class="text-sm text-gray-600 uppercase">
+                            <x-jet-danger-button class="mb-4" 
+                            wire:click="removePermissionToUser({{$permission->id}},{{$permissionsAddByUser->id}})" 
+                            wire:loading.attr="disabled">
+                                {{ __('Remove') }}
+                            </x-jet-danger-button>
+                          </div>                            
+                        </div> 
+                      
+                    @endforeach 
+                  
+                  
+                    @foreach($permissionsForAddByUser as $permission)
+                      
+                        <hr>
+                        <div class="w-full flex justify-between mt-10">                   
+                          <div class="text-sm text-gray-400">
+                            <span class="uppercase"><strong>{{$permission->name}}</strong></span></div>                          
+                          <div class="text-sm text-gray-600 uppercase"> 
+                            <x-jet-secondary-button 
+                            wire:click="addPermissionToUser({{$permission->id}},{{$permissionsAddByUser->id}})"
+                            wire:loading.attr="disabled">
+                                {{ __('Add') }}
+                            </x-jet-secondary-button> 
+                          </div>                            
+                        </div> 
+                      
+                    @endforeach
+                                  
+                </div>              
+              <!-- END: Invoice -->
+            @endif
+            
+        </div>        
+         
+      </x-slot>
+
+      <x-slot name="footer">
+          <x-jet-secondary-button wire:click="closeAddRemovePermission()" wire:loading.attr="disabled">
               {{ __('Return') }}
           </x-jet-secondary-button>      
       </x-slot>
