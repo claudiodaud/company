@@ -17,12 +17,16 @@
             <div class="p-4 flex justify-between">
               <label class="sr-only">{{ __('Search') }}</label>
               <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
-                </div>
+                @if(in_array("user.filter", $permissions))
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+                    </div>
+                @endif
                 <div class="flex justify-start">
-                <input type="text" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-60 pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" wire:model="search">
-
+                @if(in_array("user.filter", $permissions))    
+                    <input type="text" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-60 pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" wire:model="search">
+                @endif
+                @if(in_array("user.deleted", $permissions))  
                  @if($active == true)
                     <a wire:click.prevent="active(false)" type='button' class='inline-flex items-center ml-6 px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-red-700 uppercase tracking-widest shadow-sm hover:text-red-500 hover:bg-red-50 focus:outline-none focus:border-gary-300 focus:ring focus:ring-blue-200 active:text-red-800 active:bg-gray-50 disabled:opacity-25 transition'>
                         {{ __('Deleted Registers') }}
@@ -32,18 +36,21 @@
                         {{ __('Actives Registers') }}
                     </a>
                   @endif
+                @endif  
                 </div>
 
               </div>
               <div class="pt-2">  
                 @if(in_array("user.create", $permissions))
-                <a wire:click="$toggle('createNewUser')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
+                    <a wire:click="$toggle('createNewUser')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
                     {{ __('Create New') }}
-                </a>
+                    </a>
                 @endif
-                <a wire:click="downloadUsers" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
+                @if(in_array("user.download", $permissions))
+                    <a wire:click="downloadUsers" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
                     {{ __('Download') }}
-                </a>
+                    </a>
+                @endif
                 <a href="{{ route('companies.index') }}" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
                     {{ __('Return to company') }}
                 </a>
@@ -92,12 +99,16 @@
                     <th scope="col" class="px-6 py-3">
                       {{ __('Name')}}
                     </th>
+                    @if(in_array("viewRoles", $permissions))
                     <th scope="col" class="px-6 py-3">
                       {{ __('Roles')}}
                     </th>
+                    @endif
+                    @if(in_array("viewPermissions", $permissions))
                     <th scope="col" class="px-6 py-3">
                       {{ __('Permissions')}}
                     </th>
+                    @endif
                     <th scope="col" class="px-6 py-3 rounded-tr-lg rounded-br-lg text-right">
                       {{__('Actions')}}
                     </th>
@@ -113,21 +124,21 @@
                       {{$user->name}}
                     </th>
                     <td class="px-6 py-4 w-30">
-                                             
+                        @if(in_array("viewRoles", $permissions))                     
                         <a wire:click="addRemoveRoles({{$user->id}})" href="#" type='button' 
                            class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1'>
                           {{$user->roles->count()}} {{ __('Roles') }}
                         </a>
-
+                        @endif
                     </td>
 
                     <td class="px-6 py-4 w-30">
-                                             
+                        @if(in_array("viewPermissions", $permissions))                     
                         <a wire:click="addRemovePermissions({{$user->id}})" href="#" type='button' 
                            class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1'>
                           {{$user->permissions->count()}} {{ __('Directs Permissions') }}
                         </a>
-
+                        @endif
                     </td>
 
                     
@@ -137,25 +148,30 @@
                         <a href="#" class="font-medium bg-indigo-300 text-white rounded-md px-2 hover:bg-indigo-500 px-2 py-1" 
                             wire:click="showUser({{$user->id}})" wire:loading.attr="disabled">{{__('Detail')}}</a>
                         @endif
+                        @if(in_array("user.edit", $permissions))
                         <a  href="#" 
                             class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
                             wire:click="editUser({{$user->id}})" wire:loading.attr="disabled">{{__('Edit')}}</a>
-                        
+                        @endif    
+                        @if(in_array("user.delete", $permissions))
                         <a  href="#" 
                             class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
                             wire:click="confirmUserDeletion({{$user->id}})" wire:loading.attr="disabled">{{__('Delete')}}</a>
+                        @endif
                       </td>
                     @else
                       <td class="px-6 py-4 text-right w-80">
-                                            
+                        @if(in_array("user.restore", $permissions))                    
                         <a  href="#" 
                             class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
                             wire:click="confirmRestoreUser({{$user->id}})" wire:loading.attr="disabled">{{__('Restore')}}</a>
-                        
+                        @endif
+                        @if(in_array("user.forceDelete", $permissions))
                         <a  href="#" 
                             class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
                             wire:click="confirmForceUserDeletion({{$user->id}})" wire:loading.attr="disabled">{{__('Force Delete')}}
                         </a>
+                        @endif
 
                       </td>
                     @endif
@@ -346,10 +362,11 @@
           <x-jet-secondary-button wire:click="$toggle('editUser')" wire:loading.attr="disabled">
               {{ __('Cancel') }}
           </x-jet-secondary-button>
-
+          @if(in_array("user.edit", $permissions))
           <x-jet-danger-button class="ml-3" wire:click="updateUser" wire:loading.attr="disabled">
               {{ __('Update User Account Data') }}
           </x-jet-danger-button>
+          @endif
       </x-slot>
   </x-jet-dialog-modal>
 
@@ -412,17 +429,19 @@
                    @foreach($rolesAddByUser->roles as $role)
                       
                         <hr>
-                        <div class="w-full flex justify-between mt-10">                   
+                        <div class="w-full flex justify-between mt-4">                   
                           <div class="text-sm text-gray-400">
                             <span class="uppercase"><strong>{{$role->name}} </strong></span>
                             <p>{{ __('you add '.$role->permissions->count().' permissions through this role')}}</p>
                           </div>                          
                           <div class="text-sm text-gray-600 uppercase">
+                            @if(in_array("user.removeRoles", $permissions))
                             <x-jet-danger-button class="mb-4" 
                             wire:click="removeRoleToUser({{$role->id}},{{$rolesAddByUser->id}})" 
                             wire:loading.attr="disabled">
                                 {{ __('Remove') }}
                             </x-jet-danger-button>
+                            @endif
                           </div>                            
                         </div> 
                       
@@ -432,15 +451,17 @@
                     @foreach($rolesForAddByUser as $role)
                       
                         <hr>
-                        <div class="w-full flex justify-between mt-10">                   
+                        <div class="w-full flex justify-between mt-4">                   
                           <div class="text-sm text-gray-400">
                             <span class="uppercase"><strong>{{$role->name}}</strong></span></div>                          
                           <div class="text-sm text-gray-600 uppercase"> 
-                            <x-jet-secondary-button 
+                            @if(in_array("user.addRoles", $permissions))
+                            <x-jet-secondary-button class="mb-4" 
                             wire:click="addRoleToUser({{$role->id}},{{$rolesAddByUser->id}})"
                             wire:loading.attr="disabled">
                                 {{ __('Add') }}
                             </x-jet-secondary-button> 
+                            @endif
                           </div>                            
                         </div> 
                       
@@ -477,15 +498,17 @@
                    @foreach($permissionsAddByUser->permissions as $permission)
                       
                         <hr>
-                        <div class="w-full flex justify-between mt-10">                   
+                        <div class="w-full flex justify-between mt-4">                   
                           <div class="text-sm text-gray-400">
                             <span class="uppercase"><strong>{{$permission->name}}</strong></span></div>                          
                           <div class="text-sm text-gray-600 uppercase">
+                            @if(in_array("user.removeDirectPermissions", $permissions))
                             <x-jet-danger-button class="mb-4" 
                             wire:click="removePermissionToUser({{$permission->id}},{{$permissionsAddByUser->id}})" 
                             wire:loading.attr="disabled">
                                 {{ __('Remove') }}
                             </x-jet-danger-button>
+                            @endif
                           </div>                            
                         </div> 
                       
@@ -495,15 +518,17 @@
                     @foreach($permissionsForAddByUser as $permission)
                       
                         <hr>
-                        <div class="w-full flex justify-between mt-10">                   
+                        <div class="w-full flex justify-between mt-4">                   
                           <div class="text-sm text-gray-400">
                             <span class="uppercase"><strong>{{$permission->name}}</strong></span></div>                          
                           <div class="text-sm text-gray-600 uppercase"> 
-                            <x-jet-secondary-button 
+                            @if(in_array("user.addDirectPermissions", $permissions))
+                            <x-jet-secondary-button class="mb-4" 
                             wire:click="addPermissionToUser({{$permission->id}},{{$permissionsAddByUser->id}})"
                             wire:loading.attr="disabled">
                                 {{ __('Add') }}
                             </x-jet-secondary-button> 
+                            @endif
                           </div>                            
                         </div> 
                       

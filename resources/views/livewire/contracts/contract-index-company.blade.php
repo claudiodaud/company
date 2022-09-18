@@ -17,32 +17,40 @@
             <div class="p-4 flex justify-between">
               <label class="sr-only">{{ __('Search') }}</label>
               <div class="relative mt-1">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
-                </div>
+                @if(in_array("contract.filter", $permissions))
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+                  </div>
+                @endif
                 <div class="flex justify-start">
-                <input type="text" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-60 pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" wire:model="search">
-
-                 @if($active == true)
-                    <a wire:click.prevent="active(false)" type='button' class='inline-flex items-center ml-6 px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-red-700 uppercase tracking-widest shadow-sm hover:text-red-500 hover:bg-red-50 focus:outline-none focus:border-gary-300 focus:ring focus:ring-blue-200 active:text-red-800 active:bg-gray-50 disabled:opacity-25 transition'>
-                        {{ __('Deleted Registers') }}
-                    </a>
-                  @elseif($active == false)
-                    <a wire:click.prevent="active(true)" type='button' class='inline-flex items-center ml-6 px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-green-700 uppercase tracking-widest shadow-sm hover:text-green-500 hover:bg-green-50 focus:outline-none focus:border-gray-300 focus:ring focus:ring-blue-200 active:text-green-800 active:bg-gray-50 disabled:opacity-25 transition'>
-                        {{ __('Actives Registers') }}
-                    </a>
-                  @endif
+                @if(in_array("contract.filter", $permissions))  
+                  <input type="text" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-60 pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" wire:model="search">
+                @endif
+                @if(in_array("contract.deleted", $permissions))
+                   @if($active == true)
+                      <a wire:click.prevent="active(false)" type='button' class='inline-flex items-center ml-6 px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-red-700 uppercase tracking-widest shadow-sm hover:text-red-500 hover:bg-red-50 focus:outline-none focus:border-gary-300 focus:ring focus:ring-blue-200 active:text-red-800 active:bg-gray-50 disabled:opacity-25 transition'>
+                          {{ __('Deleted Registers') }}
+                      </a>
+                    @elseif($active == false)
+                      <a wire:click.prevent="active(true)" type='button' class='inline-flex items-center ml-6 px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-green-700 uppercase tracking-widest shadow-sm hover:text-green-500 hover:bg-green-50 focus:outline-none focus:border-gray-300 focus:ring focus:ring-blue-200 active:text-green-800 active:bg-gray-50 disabled:opacity-25 transition'>
+                          {{ __('Actives Registers') }}
+                      </a>
+                    @endif
+                @endif    
                 </div>
 
               </div>
-              <div class="pt-2">  
+              <div class="pt-2"> 
+              @if(in_array("contract.create", $permissions)) 
                 <a wire:click="$toggle('createNewContract')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
                     {{ __('Create New') }}
                 </a>
-
+              @endif
+              @if(in_array("contract.download", $permissions))  
                 <a wire:click="downloadContracts" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
                     {{ __('Download') }}
                 </a>
+              @endif  
                 <a href="{{ route('companies.index') }}" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
                     {{ __('Return to company') }}
                 </a>
@@ -97,10 +105,11 @@
                     <th scope="col" class="px-6 py-3">
                       {{ __('Name')}}
                     </th>
-                    <th scope="col" class="px-6 py-3">
-                      {{ __('Users')}}
-                    </th>
-                    
+                    @if(in_array("viewUsers", $permissions))
+                      <th scope="col" class="px-6 py-3">
+                        {{ __('Users')}}
+                      </th>
+                    @endif                    
                     <th scope="col" class="px-6 py-3 rounded-tr-lg rounded-br-lg text-right">
                       {{__('Actions')}}
                     </th>
@@ -116,40 +125,47 @@
                       {{$contract->name}}
                     </th>
                     <td class="px-6 py-4 w-30">
-                                            
-                        <a wire:click="addRemoveContract({{$contract->id}} , {{$contract->company_id}})" href="#{{--route('users.index.company', $contract->company->id)--}}" 
+                      @if(in_array("viewUsers", $permissions))                    
+                        <a wire:click="addRemoveUsers({{$contract->id}})" href="#{{--route('users.index.company', $contract->company->id)--}}" 
                            type='button' 
                            class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1'>
                           {{$contract->users->count()}} {{ __('Users') }}
                         </a>
-
+                      @endif  
                     </td>
                     
                     @if($active == true)
                       <td class="px-6 py-4 text-right w-80">
-                        <a href="#" class="font-medium bg-indigo-300 text-white rounded-md px-2 hover:bg-indigo-500 px-2 py-1" 
+                        @if(in_array("contract.show", $permissions))
+                            <a href="#" 
+                            class="font-medium bg-indigo-300 text-white rounded-md px-2 hover:bg-indigo-500 px-2 py-1" 
                             wire:click="showContract({{$contract->id}})" wire:loading.attr="disabled">{{__('Detail')}}</a>
-                        
-                        <a  href="#" 
+                        @endif
+                        @if(in_array("contract.edit", $permissions))
+                            <a  href="#" 
                             class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
                             wire:click="editContract({{$contract->id}})" wire:loading.attr="disabled">{{__('Edit')}}</a>
-                        
-                        <a  href="#" 
+                        @endif
+                        @if(in_array("contract.delete", $permissions))
+                            <a  href="#" 
                             class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
                             wire:click="confirmContractDeletion({{$contract->id}})" wire:loading.attr="disabled">{{__('Delete')}}</a>
+                        @endif    
                       </td>
                     @else
                       <td class="px-6 py-4 text-right w-80">
-                                            
-                        <a  href="#" 
+                        @if(in_array("contract.restore", $permissions))                    
+                            <a  href="#" 
                             class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
-                            wire:click="confirmRestoreContract({{$contract->id}})" wire:loading.attr="disabled">{{__('Restore')}}</a>
-                        
-                        <a  href="#" 
+                            wire:click="confirmRestoreContract({{$contract->id}})" wire:loading.attr="disabled">{{__('Restore')}}
+                            </a>
+                        @endif
+                        @if(in_array("contract.forceDelete", $permissions))
+                            <a  href="#" 
                             class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
                             wire:click="confirmForceContractDeletion({{$contract->id}})" wire:loading.attr="disabled">{{__('Force Delete')}}
-                        </a>
-
+                            </a>
+                        @endif
                       </td>
                     @endif
                   </tr>
@@ -321,10 +337,11 @@
           <x-jet-secondary-button wire:click="$toggle('editContract')" wire:loading.attr="disabled">
               {{ __('Cancel') }}
           </x-jet-secondary-button>
-
+          @if(in_array("contract.edit", $permissions))
           <x-jet-danger-button class="ml-3" wire:click="updateContract" wire:loading.attr="disabled">
               {{ __('Update Contract Data') }}
           </x-jet-danger-button>
+          @endif
       </x-slot>
   </x-jet-dialog-modal>
 
@@ -370,7 +387,7 @@
   </x-jet-dialog-modal>
 
   <!-- Add / Remove Contract Modal -->
-  <x-jet-dialog-modal wire:model="addRemoveContract" maxWidth="xl"> 
+  <x-jet-dialog-modal wire:model="addRemoveUsers" maxWidth="xl"> 
       <x-slot name="title">
           {{ __('Add or remove users to contract') }}
       </x-slot>
@@ -382,35 +399,37 @@
               <!-- Start: Invoice -->
                 <div class="w-full">  
                             
-                    @foreach($usersAddByContract as $contract)
-                      @foreach($contract->users as $user)
-
-                        <hr>
-                        <div class="w-full flex justify-between mt-10">                   
-                          <div class="text-sm text-gray-400">
-                            <span class="uppercase"><strong>{{$user->name}}</span> - </strong>{{$user->email}}</div>                          
-                          <div class="text-sm text-gray-600 uppercase">
-                            <x-jet-danger-button class="mb-4" wire:click="removeUserToContract({{$user->id}},{{$usersAddByContract[0]->id}},{{$usersAddByContract[0]->company_id}})" wire:loading.attr="disabled">
-                                {{ __('Remove') }}
+                    @foreach($usersAddByContract->users as $user)
+                      <hr>
+                      <div class="w-full flex justify-between mt-4">                   
+                        <div class="text-sm text-gray-400">
+                          <span class="uppercase"><strong>{{$user->name}}</span> - </strong>{{$user->email}}</div>                          
+                        <div class="text-sm text-gray-600 uppercase">
+                          @if(in_array("contract.removeUsers", $permissions))
+                            <x-jet-danger-button class="mb-4" wire:click="removeUserToContract({{$user->id}},{{$usersAddByContract->id}})" wire:loading.attr="disabled">
+                              {{ __('Remove') }}
                             </x-jet-danger-button>
-                          </div>                            
-                        </div> 
-                      @endforeach
+                          @endif
+                        </div>                            
+                      </div> 
                     @endforeach
+                   
                   
                   
                     @foreach($usersAddByCompany as $user)
                       
                         <hr>
-                        <div class="w-full flex justify-between mt-10">                   
+                        <div class="w-full flex justify-between mt-4">                   
                           <div class="text-sm text-gray-400">
                             <span class="uppercase"><strong>{{$user->name}}</span> - </strong>{{$user->email}}</div>                          
                           <div class="text-sm text-gray-600 uppercase"> 
-                            <x-jet-secondary-button 
-                            wire:click="addUserToContract({{$user->id}},{{$usersAddByContract[0]->id}},{{$usersAddByContract[0]->company_id}})"
+                            @if(in_array("contract.addUsers", $permissions))
+                            <x-jet-secondary-button class="mb-4" 
+                            wire:click="addUserToContract({{$user->id}},{{$usersAddByContract->id}})"
                             wire:loading.attr="disabled">
                                 {{ __('Add') }}
                             </x-jet-secondary-button> 
+                            @endif 
                           </div>                            
                         </div> 
                       
@@ -425,7 +444,7 @@
       </x-slot>
 
       <x-slot name="footer">
-          <x-jet-secondary-button wire:click="closeAddRemoveContract()" wire:loading.attr="disabled">
+          <x-jet-secondary-button wire:click="closeAddRemoveUsers()" wire:loading.attr="disabled">
               {{ __('Return') }}
           </x-jet-secondary-button>      
       </x-slot>

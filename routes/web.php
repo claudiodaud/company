@@ -5,7 +5,6 @@ use App\Http\Livewire\Companies\CompanyIndex;
 use App\Http\Livewire\Contracts\ContractIndexCompany;
 use App\Http\Livewire\Roles\RoleIndexCompany;
 use App\Http\Livewire\Users\UserIndexCompany;
-
 use Illuminate\Auth\Middleware\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -34,12 +33,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
         // Users - Roles and Permission Modules
         Route::get('/users-index-company/{id?}', UserIndexCompany::class)->name('users.index.company');
-        Route::get('/contracts-index-company/{id?}', ContractIndexCompany::class)->name('contracts.index.company');          
         Route::get('/roles-index-company/{id?}', RoleIndexCompany::class)->name('roles.index.company');
-
-        //Route::get('/permissions-index', PermissionIndex::class)->name('permissions.index');
-
+        
         // Operationals Modules 
         Route::get('/companies-index', CompanyIndex::class)->name('companies.index');
-        //Route::get('/boxes-index', BoxIndex::class)->name('box.index');
+        Route::get('/contracts-index-company/{id?}', ContractIndexCompany::class)->name('contracts.index.company');   
     });

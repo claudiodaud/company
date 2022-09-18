@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Contracts;
 use App\Exports\CompanyContractsExport;
 use App\Models\Company;
 use App\Models\Contract;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +16,7 @@ use Illuminate\Validation\withMessages;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Excel;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 
 class ContractIndexCompany extends Component
@@ -53,14 +55,17 @@ class ContractIndexCompany extends Component
     public $active = true;
 
     //Add and Remove Users
-    public $addRemoveContract;
+    public $addRemoveUsers;
     public $usersAddByCompany;
-    public $usersAddByContract;  
+    public $usersAddByContract; 
+
+    public $permissions;   
         
 
     public function mount($id)
     {
         $this->companyId = $id ; 
+        $this->getPermissions();
     }
 
     public function render()
@@ -87,11 +92,49 @@ class ContractIndexCompany extends Component
         }
  
         
-        return view('livewire.contracts.contract-index-company', [
+        if(in_array("viewContracts", $this->permissions)){
+            
+            return view('livewire.contracts.contract-index-company', [
 
-            'contracts' => $contracts,
+                'contracts' => $contracts,
 
-        ]);
+            ]);
+
+        }else{
+
+            throw UnauthorizedException::forPermissions($this->permissions);
+
+        }
+    }
+
+    public function getPermissions()
+    {
+        $userWithRolesAndPermissions = User::where('id',auth()->user()->id)->with('roles')->first();
+        $userWithDirectsPermissions = User::where('id',auth()->user()->id)->with('permissions')->first();
+        
+        
+        $permissions = [];
+
+        //find permissions for roles
+        foreach ($userWithRolesAndPermissions->roles as $key => $role) {
+           
+            $role = Role::where('id',$role->id)->with('permissions')->first();
+                
+                foreach ($role->permissions as $key => $permission) {
+                    array_push($permissions,$permission->name);
+                }                
+        }
+
+        //find directs permissions
+        foreach ($userWithDirectsPermissions->permissions as $key => $permission) {
+        
+            array_push($permissions,$permission->name);
+                         
+        }
+
+        $this->permissions = array_unique($permissions);
+
+        //dd($this->permissions);
     }
 
     public function updatingSearch()
@@ -267,19 +310,19 @@ class ContractIndexCompany extends Component
         $this->contractShow = null;        
     }
 
-    public function addRemoveContract($contract_id,$company_id)
+    public function addRemoveUsers($contract_id)
     {
         
-        $this->usersAddByContract = Contract::where('id',$contract_id)->with('users')->get();
+        $this->usersAddByContract = Contract::where('id',$contract_id)->with('users')->first();
         $usersAddIds = [];
-        foreach ($this->usersAddByContract[0]->users as $key => $user) {
+        foreach ($this->usersAddByContract->users as $key => $user) {
             array_push($usersAddIds,$user->id);
         }
 
 
-        $this->usersAddByCompany = Company::where('id',$company_id)->with('users')->get();
+        $this->usersAddByCompany = Company::where('id',$this->companyId)->with('users')->first();
         $usersForAddIds = [];
-        foreach ($this->usersAddByCompany[0]->users as $key => $user) {
+        foreach ($this->usersAddByCompany->users as $key => $user) {
             array_push($usersForAddIds,$user->id);
         }
 
@@ -291,29 +334,29 @@ class ContractIndexCompany extends Component
         $this->usersAddByCompany = User::whereIn('id', $usersForAddIds)->get();
 
         
-        $this->addRemoveContract = true;
+        $this->addRemoveUsers = true;
     }
 
-    public function closeAddRemoveContract()
+    public function closeAddRemoveUsers()
     {
-        $this->addRemoveContract = false;
+        $this->addRemoveUsers = false;
 
         $this->usersAdd = null;        
     }
 
-    public function addUserToContract($user_id,$contract_id,$company_id)
+    public function addUserToContract($user_id,$contract_id)
     {
         $user = User::find($user_id);
         $user->contracts()->attach($contract_id);
-        $this->addRemoveContract($contract_id,$company_id);
+        $this->addRemoveUsers($contract_id);
 
     }
 
-    public function removeUserToContract($user_id,$contract_id,$company_id)
+    public function removeUserToContract($user_id,$contract_id)
     {
         $user = User::find($user_id);
         $user->contracts()->detach($contract_id);
-        $this->addRemoveContract($contract_id,$company_id);
+        $this->addRemoveUsers($contract_id);
 
     }
 

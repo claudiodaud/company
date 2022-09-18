@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Companies;
 
 use App\Exports\CompaniesExport;
 use App\Models\Company;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +14,7 @@ use Illuminate\Validation\withMessages;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Excel;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 
 class CompanyIndex extends Component
@@ -45,10 +47,21 @@ class CompanyIndex extends Component
 
     public $active = true;
 
+    public $permissions;
+
 
     protected $rules = [
         'name' => 'required|string|max:70|min:1|unique:companies,name',        
     ];
+
+
+    public function mount()
+    {
+        
+        $this->getPermissions();
+       
+    }
+
 
     public function render()
     {
@@ -70,12 +83,50 @@ class CompanyIndex extends Component
                                    
         }
                                 
+        if(in_array("viewCompanies", $this->permissions)){
 
-        return view('livewire.companies.company-index', [
+            return view('livewire.companies.company-index', [
 
-            'companies' => $companies,
+                'companies' => $companies,
 
-        ]);
+            ]);
+
+        }else{
+
+            throw UnauthorizedException::forPermissions($this->permissions);
+
+        }
+        
+    }
+
+    public function getPermissions()
+    {
+        $userWithRolesAndPermissions = User::where('id',auth()->user()->id)->with('roles')->first();
+        $userWithDirectsPermissions = User::where('id',auth()->user()->id)->with('permissions')->first();
+        
+        
+        $permissions = [];
+
+        //find permissions for roles
+        foreach ($userWithRolesAndPermissions->roles as $key => $role) {
+           
+            $role = Role::where('id',$role->id)->with('permissions')->first();
+                
+                foreach ($role->permissions as $key => $permission) {
+                    array_push($permissions,$permission->name);
+                }                
+        }
+
+        //find directs permissions
+        foreach ($userWithDirectsPermissions->permissions as $key => $permission) {
+        
+            array_push($permissions,$permission->name);
+                         
+        }
+
+        $this->permissions = array_unique($permissions);
+
+        //dd($this->permissions);
     }
 
     public function updatingSearch()

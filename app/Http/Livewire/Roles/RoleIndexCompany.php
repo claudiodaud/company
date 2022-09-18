@@ -5,8 +5,9 @@ namespace App\Http\Livewire\Roles;
 
 use App\Exports\CompanyRolesExport;
 use App\Models\Company;
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -16,6 +17,7 @@ use Illuminate\Validation\withMessages;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Excel;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 
 
@@ -53,6 +55,7 @@ class RoleIndexCompany extends Component
     //Add and Remove Users
     public $addRemovePermissions;
     public $permissionsAddByRole;
+    public $permissionsForAddByRole;
     public $permissions;  
 
 
@@ -63,6 +66,7 @@ class RoleIndexCompany extends Component
     public function mount($id)
     {
         $this->companyId = $id ; 
+        $this->getPermissions();
     }
 
     public function render()
@@ -89,13 +93,53 @@ class RoleIndexCompany extends Component
                                    
         }            
 
-        return view('livewire.roles.role-index-company', [
+        
 
-            'roles' => $roles,
+        if(in_array("viewRoles", $this->permissions)){
+            
+            return view('livewire.roles.role-index-company', [
 
-        ]);
+                'roles' => $roles,
+
+            ]);
+
+        }else{
+
+            throw UnauthorizedException::forPermissions($this->permissions);
+
+        }
 
        
+    }
+
+    public function getPermissions()
+    {
+        $userWithRolesAndPermissions = User::where('id',auth()->user()->id)->with('roles')->first();
+        $userWithDirectsPermissions = User::where('id',auth()->user()->id)->with('permissions')->first();
+        
+        
+        $permissions = [];
+
+        //find permissions for roles
+        foreach ($userWithRolesAndPermissions->roles as $key => $role) {
+           
+            $role = Role::where('id',$role->id)->with('permissions')->first();
+                
+                foreach ($role->permissions as $key => $permission) {
+                    array_push($permissions,$permission->name);
+                }                
+        }
+
+        //find directs permissions
+        foreach ($userWithDirectsPermissions->permissions as $key => $permission) {
+        
+            array_push($permissions,$permission->name);
+                         
+        }
+
+        $this->permissions = array_unique($permissions);
+
+        //dd($this->permissions);
     }
 
     public function updatingSearch()
@@ -269,9 +313,9 @@ class RoleIndexCompany extends Component
         }
         
 
-        $this->permissions = Permission::all();
+        $this->permissionsForAddByRole = Permission::all();
         $permissionsForAddIds = [];
-        foreach ($this->permissions as $key => $permission) {
+        foreach ($this->permissionsForAddByRole as $key => $permission) {
             array_push($permissionsForAddIds,$permission->id);
         }
         

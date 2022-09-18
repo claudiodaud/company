@@ -18,6 +18,7 @@ use Illuminate\Validation\withMessages;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Excel;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 
 class UserIndexCompany extends Component
@@ -66,13 +67,55 @@ class UserIndexCompany extends Component
      
 
 
-    public $permissions = [];
+    public $permissions;
         
 
     public function mount($id)
     {
         $this->companyId = $id ; 
 
+        $this->getPermissions();
+    }
+
+    public function render()
+    {
+        $usersByCompany = Company::find($this->companyId)->users();
+        
+        
+        if ($this->active == true) {
+
+            $users = $usersByCompany->Where(function($query) {
+                             $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
+                                     ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
+                                     ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
+                                })->orderBy('users.id', 'DESC')->paginate(10);
+        }else{
+
+             $users = $usersByCompany->Where(function($query) {
+                             $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
+                                     ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
+                                     ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
+                                })->orderBy('users.id', 'DESC')->onlyTrashed()->paginate(10);
+                                   
+        }
+ 
+        if(in_array("viewUsers", $this->permissions)){
+            
+            return view('livewire.users.user-index-company', [
+
+                'users' => $users,
+
+            ]);
+
+        }else{
+
+            throw UnauthorizedException::forPermissions($this->permissions);
+
+        }
+    }
+
+    public function getPermissions()
+    {
         $userWithRolesAndPermissions = User::where('id',auth()->user()->id)->with('roles')->first();
         $userWithDirectsPermissions = User::where('id',auth()->user()->id)->with('permissions')->first();
         
@@ -99,36 +142,6 @@ class UserIndexCompany extends Component
         $this->permissions = array_unique($permissions);
 
         //dd($this->permissions);
-    }
-
-    public function render()
-    {
-        $usersByCompany = Company::find($this->companyId)->users();
-        
-        
-        if ($this->active == true) {
-
-            $users = $usersByCompany->Where(function($query) {
-                             $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('users.id', 'DESC')->paginate(10);
-        }else{
-
-             $users = $usersByCompany->Where(function($query) {
-                             $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('users.id', 'DESC')->onlyTrashed()->paginate(10);
-                                   
-        }
- 
-        
-        return view('livewire.users.user-index-company', [
-
-            'users' => $users,
-
-        ]);
     }
 
     
