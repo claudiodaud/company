@@ -10,47 +10,51 @@
       <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">                
         
 
+
           {{--Component Table--}}
 
-          <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <div class="p-4 flex justify-between">
-              
-              <div class="relative mt-1">
-                @if(in_array("company.filter", $permissions))
-                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
-                  </div>
-                @endif   
-                  <div class="flex justify-start">
-                @if(in_array("company.filter", $permissions))
-                    <input type="text" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-60 pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" wire:model="search">
-                @endif
-
+          <div class=" shadow-md sm:rounded-lg">
+            <div class="p-4 ">
+              <div class="block sm:flex sm:justify-between">
+                <div class="block sm:flex justify-start ">
+                  <div class="relative">
+                  @if(in_array("company.filter", $permissions))
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+                    </div>
+                  @endif   
+                  
+                  @if(in_array("company.filter", $permissions))
+                      <input type="text" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 py-3  sm:mx-0 sm:mr-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full sm:w-60" placeholder="Search for items" wire:model="search">
+                  @endif
+                </div>
+                    
                 @if(in_array("company.deleted", $permissions))    
                   @if($active == true)
-                    <a wire:click.prevent="active(false)" type='button' class='inline-flex items-center ml-6 px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-red-700 uppercase tracking-widest shadow-sm hover:text-red-500 hover:bg-red-50 focus:outline-none focus:border-gary-300 focus:ring focus:ring-blue-200 active:text-red-800 active:bg-gray-50 disabled:opacity-25 transition'>
+                    <a wire:click.prevent="active(false)" type='button' class='inline-flex items-center  px-2 sm:px-2 py-3 sm:mx-2 sm:py-0 mt-2 sm:mt-0 bg-white border border-gray-300 rounded-md font-semibold text-xs text-red-700 uppercase tracking-widest shadow-sm hover:text-red-500 hover:bg-red-50 focus:outline-none focus:border-gary-300 focus:ring focus:ring-blue-200 active:text-red-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-60'>
                         {{ __('Deleted Registers') }}
                     </a>
                   @elseif($active == false)
-                    <a wire:click.prevent="active(true)" type='button' class='inline-flex items-center ml-6 px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-green-700 uppercase tracking-widest shadow-sm hover:text-green-500 hover:bg-green-50 focus:outline-none focus:border-gray-300 focus:ring focus:ring-blue-200 active:text-green-800 active:bg-gray-50 disabled:opacity-25 transition'>
+                    <a wire:click.prevent="active(true)" type='button' class='inline-flex items-center px-2 sm:px-2 py-3 sm:mx-2 sm:py-0 mt-2 sm:mt-0 bg-white border border-gray-300 rounded-md font-semibold text-xs text-green-700 uppercase tracking-widest shadow-sm hover:text-green-500 hover:bg-green-50 focus:outline-none focus:border-gray-300 focus:ring focus:ring-blue-200 active:text-green-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-60'>
                         {{ __('Actives Registers') }}
                     </a>
                   @endif
-                @endif  
+                @endif 
+                </div> 
+              
+              
+                <div class="flex sm:justify-end">
+                  @if(in_array("company.create", $permissions))
+                    <a wire:click="$toggle('createNewCompany')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-60 py-3 sm:py-0 mt-2 sm:mt-0 sm:mx-2 mr-1'>
+                        {{ __('Create New') }}
+                    </a>
+                  @endif
+                  @if(in_array("company.download", $permissions))
+                    <a wire:click="downloadCompanies" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-60 py-3 sm:py-0 mt-2 sm:mt-0 sm:ml-2 ml-1'>
+                        {{ __('Download') }}
+                    </a>
+                  @endif
                 </div>
-
-              </div>
-              <div class="pt-2">
-                @if(in_array("company.create", $permissions))
-                  <a wire:click="$toggle('createNewCompany')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
-                      {{ __('Create New') }}
-                  </a>
-                @endif
-                @if(in_array("company.download", $permissions))
-                  <a wire:click="downloadCompanies" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition'>
-                      {{ __('Download') }}
-                  </a>
-                @endif
               </div>
             </div>
             <div class="mx-4">
@@ -87,31 +91,32 @@
               </x-jet-action-message> 
 
               {{--Table--}}
+              <div class="relative overflow-x-auto">
               <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 ">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400 ">
                   <tr>
-                    <th scope="col" class="px-6 py-3 rounded-tl-lg rounded-bl-lg">
+                    <th scope="col" class="px-6 py-3 w-max rounded-tl-lg rounded-bl-lg">
                       {{ __('Id')}}
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    <th scope="col" class="px-6 py-3 w-max">
                       {{ __('Name')}}
                     </th>
                     @if(in_array("viewUsers", $permissions))
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col" class="px-6 py-3 w-max">
                         {{ __('Users')}}
                       </th>
                     @endif
                     @if(in_array("viewContracts", $permissions))
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col" class="px-6 py-3 w-max">
                         {{ __('Contracts')}}
                       </th>
                     @endif
                     @if(in_array("viewRoles", $permissions))
-                      <th scope="col" class="px-6 py-3">
+                      <th scope="col" class="px-6 py-3 w-max">
                         {{ __('Roles')}}
                       </th>
                     @endif
-                    <th scope="col" class="px-6 py-3 rounded-tr-lg rounded-br-lg text-right">
+                    <th scope="col" class="px-6 py-3 w-max rounded-tr-lg rounded-br-lg text-right">
                       {{__('Actions')}}
                     </th>
                   </tr>
@@ -119,66 +124,70 @@
                 <tbody>
                   @forelse ($companies as $company)
                     <tr class="bg-white border-b hover:bg-gray-100 even:bg-gray-50">
-                    <td class="px-6 py-4 w-10">
+                    <td class="px-6 py-4 w-max">
                       #{{$company->id}}
                     </td>
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap truncate ... ">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap truncate ... w-max">
                       {{$company->name}}
                     </th>
-                    <td class="px-6 py-4 w-30">
+                    <td class="px-6 py-4 ">
                         @if(in_array("viewUsers", $permissions))                    
                           <a href="{{route('users.index.company', $company->id)}}" type='button' 
-                             class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1'>
+                             class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
                             {{$company->users->count()}} {{ __('Users') }}
                           </a>
                         @endif  
                     </td>
-                    <td class="px-6 py-4 w-30">
+                    <td class="px-6 py-4 ">
                         @if(in_array("viewContracts", $permissions))                     
                           <a href="{{route('contracts.index.company', $company->id)}}" type='button' 
-                             class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1'>
+                             class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
                             {{$company->contracts->count()}} {{ __('Contracts') }}
                           </a>
                         @endif  
                     </td>
-                    <td class="px-6 py-4 w-30">
+                    <td class="px-6 py-4 ">
                         @if(in_array("viewRoles", $permissions))                     
                           <a href="{{route('roles.index.company', $company->id)}}" type='button' 
-                             class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1'>
+                             class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
                             {{$company->roles->count()}} {{ __('Roles') }}
                           </a>
                         @endif  
                     </td>
                     @if($active == true)
                       <td class="px-6 py-4 text-right w-120">
+                        <div class="flex justify-end">
                         @if(in_array("company.show", $permissions))
-                          <a href="#" class="font-medium bg-indigo-300 text-white rounded-md px-2 hover:bg-indigo-500 px-2 py-1" 
+                          <a href="#" class="font-medium bg-indigo-300 text-white rounded-md px-2 hover:bg-indigo-500 px-2 py-1 mx-1" 
                               wire:click="showCompany({{$company->id}})" wire:loading.attr="disabled">{{__('Detail')}}</a>
                         @endif
                         @if(in_array("company.edit", $permissions))
                           <a  href="#" 
-                              class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
+                              class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1 mx-1" 
                               wire:click="editCompany({{$company->id}})" wire:loading.attr="disabled">{{__('Edit')}}</a>
                         @endif
                         @if(in_array("company.delete", $permissions))
                         <a  href="#" 
-                            class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
+                            class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1 mx-1"
                             wire:click="confirmCompanyDeletion({{$company->id}})" wire:loading.attr="disabled">{{__('Delete')}}</a>
-                        @endif    
+                        @endif  
+                        </div>
                       </td>
                     @else
                       <td class="px-6 py-4 text-right w-80">
+                        <div class="flex justify-end">
                         @if(in_array("company.restore", $permissions))                    
                           <a  href="#" 
-                              class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1" 
+                              class="font-medium bg-blue-300 text-white rounded-md px-2 hover:bg-blue-500 px-2 py-1 mx-1" 
                               wire:click="confirmRestoreCompany({{$company->id}})" wire:loading.attr="disabled">{{__('Restore')}}</a>
                         @endif
                         @if(in_array("company.forceDelete", $permissions))
                           <a  href="#" 
-                              class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1"
+                              class="font-medium bg-red-300 text-white rounded-md px-2 hover:bg-red-500 px-2 py-1 mx-1"
                               wire:click="confirmForceCompanyDeletion({{$company->id}})" wire:loading.attr="disabled">{{__('Force Delete')}}
                           </a>
-                        @endif  
+                        @endif 
+                        </div> 
                       </td>
                     @endif
                   </tr>
@@ -188,6 +197,7 @@
                   
                 </tbody>
               </table>
+              </div>
 
             </div>
             {{--Pagination--}}
