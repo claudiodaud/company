@@ -37,7 +37,6 @@ class CompanyContractsExport implements FromView
 
                 $contracts = $contractsByCompany->Where(function($query) {
                                  $query  ->orWhere('contracts.name', 'like', '%'.$this->search.'%')
-                                         ->orWhere('contracts.email', 'like', '%'.$this->search.'%')   
                                          ->orWhere('contracts.created_at', 'like', '%'.$this->search.'%')
                                          ->orWhere('contracts.updated_at', 'like', '%'.$this->search.'%');                            
                                     })->orderBy('contracts.id', 'DESC')->get();
@@ -45,7 +44,6 @@ class CompanyContractsExport implements FromView
 
                  $contracts = $contractsByCompany->Where(function($query) {
                                  $query  ->orWhere('contracts.name', 'like', '%'.$this->search.'%')
-                                         ->orWhere('contracts.email', 'like', '%'.$this->search.'%')   
                                          ->orWhere('contracts.created_at', 'like', '%'.$this->search.'%')
                                          ->orWhere('contracts.updated_at', 'like', '%'.$this->search.'%');                            
                                     })->orderBy('contracts.id', 'DESC')->onlyTrashed()->get();

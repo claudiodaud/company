@@ -57,4 +57,15 @@ class Company extends Model
         // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
         return $this->belongsToMany(Role::class);
     }
+
+    /**
+     * Company has many Contract.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function customers()
+    {
+        // hasMany(RelatedModel, foreignKeyOnRelatedModel = company_id, localKey = id)
+        return $this->hasMany(Customer::class);
+    }
 }
