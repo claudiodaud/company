@@ -21,6 +21,7 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'viewRoles','guard_name' => 'web']);
         Permission::create(['name' => 'viewPermissions','guard_name' => 'web']);
         Permission::create(['name' => 'viewCustomers','guard_name' => 'web']);
+        Permission::create(['name' => 'viewServices','guard_name' => 'web']);
 
         //Company permissions
         Permission::create(['name' => 'company.deleted','guard_name' => 'web']);
@@ -84,6 +85,17 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'customer.delete','guard_name' => 'web']);
         Permission::create(['name' => 'customer.restore','guard_name' => 'web']);
         Permission::create(['name' => 'customer.forceDelete','guard_name' => 'web']);
+
+        //Service Permissions
+        Permission::create(['name' => 'service.deleted','guard_name' => 'web']);
+        Permission::create(['name' => 'service.filter','guard_name' => 'web']);
+        Permission::create(['name' => 'service.create','guard_name' => 'web']);
+        Permission::create(['name' => 'service.download','guard_name' => 'web']);
+        Permission::create(['name' => 'service.show','guard_name' => 'web']);
+        Permission::create(['name' => 'service.edit','guard_name' => 'web']);
+        Permission::create(['name' => 'service.delete','guard_name' => 'web']);
+        Permission::create(['name' => 'service.restore','guard_name' => 'web']);
+        Permission::create(['name' => 'service.forceDelete','guard_name' => 'web']);
         
 
 

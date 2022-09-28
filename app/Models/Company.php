@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use App\Models\Box;
-use App\Models\User;
 use App\Models\Role;
+use App\Models\Service;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -67,5 +68,16 @@ class Company extends Model
     {
         // hasMany(RelatedModel, foreignKeyOnRelatedModel = company_id, localKey = id)
         return $this->hasMany(Customer::class);
+    }
+
+    /**
+     * Company belongs to Services.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function services()
+    {
+        // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
+        return $this->belongsToMany(Service::class);
     }
 }
