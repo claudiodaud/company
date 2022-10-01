@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Box;
 use App\Models\Company;
 use App\Models\Permission;
+use App\Models\Quote;
 use App\Models\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -98,7 +99,5 @@ class User extends Authenticatable
         return $this->morphToMany(Role::class, 'model','model_has_roles','model_id','role_id');
     }
 
-    
-
-   
+      
 }

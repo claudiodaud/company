@@ -43,5 +43,16 @@ class Contract extends Model
         return $this->belongsTo(Company::class);
     }
 
+    /**
+     * User has many Quote.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function quotes()
+    {
+        // hasMany(RelatedModel, foreignKeyOnRelatedModel = user_id, localKey = id)
+        return $this->hasMany(Quote::class);
+    }
+
 
 }

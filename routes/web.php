@@ -5,6 +5,7 @@ use App\Http\Livewire\Companies\CompanyIndex;
 use App\Http\Livewire\Contracts\ContractIndexCompany;
 use App\Http\Livewire\Customers\CustomerIndexCompany;
 use App\Http\Livewire\Products\ProductIndexCompany;
+use App\Http\Livewire\Quotes\QuoteIndexContract;
 use App\Http\Livewire\Roles\RoleIndexCompany;
 use App\Http\Livewire\Services\ServiceIndexCompany;
 use App\Http\Livewire\Users\UserIndexCompany;
@@ -43,5 +44,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/contracts-index-company/{id?}', ContractIndexCompany::class)->name('contracts.index.company');  
         Route::get('/customers-index-company/{id?}', CustomerIndexCompany::class)->name('customers.index.company');   
         Route::get('/services-index-company/{id?}', ServiceIndexCompany::class)->name('services.index.company');  
-        Route::get('/products-index-company/{id?}', ProductIndexCompany::class)->name('products.index.company');   
+        Route::get('/products-index-company/{id?}', ProductIndexCompany::class)->name('products.index.company');  
+        Route::get('/quotes-index-contract/{id?}', QuoteIndexContract::class)->name('quotes.index.contract');   
     });

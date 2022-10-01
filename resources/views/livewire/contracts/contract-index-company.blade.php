@@ -45,12 +45,12 @@
               
                 <div class="flex sm:justify-end">
                   @if(in_array("contract.create", $permissions))
-                    <a wire:click="$toggle('createNewCompany')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-40 py-3 sm:py-0 mt-2 sm:mt-0 sm:mx-2 mr-1'>
+                    <a wire:click="$toggle('createNewContract')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-40 py-3 sm:py-0 mt-2 sm:mt-0 sm:mx-2 mr-1'>
                         {{ __('Create New') }}
                     </a>
                   @endif
                   @if(in_array("contract.download", $permissions))
-                    <a wire:click="downloadCompanies" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-40 py-3 sm:py-0 mt-2 sm:mt-0 sm:mx-2 ml-1 mr-1'>
+                    <a wire:click="downloadContracts" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-40 py-3 sm:py-0 mt-2 sm:mt-0 sm:mx-2 ml-1 mr-1'>
                         {{ __('Download') }}
                     </a>
                   @endif
@@ -114,6 +114,11 @@
                       <th scope="col" class="px-6 py-3 w-max">
                         {{ __('Users')}}
                       </th>
+                    @endif
+                    @if(in_array("viewQuotes", $permissions))
+                      <th scope="col" class="px-6 py-3 w-max">
+                        {{ __('Quotes')}}
+                      </th>
                     @endif                    
                     <th scope="col" class="px-6 py-3 w-max rounded-tr-lg rounded-br-lg text-right">
                       {{__('Actions')}}
@@ -137,6 +142,14 @@
                           {{$contract->users->count()}} {{ __('Users') }}
                         </a>
                       @endif  
+                    </td>
+                    <td class="px-6 py-4 ">
+                        @if(in_array("viewQuotes", $permissions))                     
+                          <a href="{{route('quotes.index.contract', $contract->id)}}" type='button' 
+                             class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
+                            {{$contract->quotes->count()}} {{ __('Quotes') }}
+                          </a>
+                        @endif  
                     </td>
                     
                     @if($active == true)
