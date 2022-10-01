@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Box;
+use App\Models\Product;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\User;
@@ -79,5 +80,16 @@ class Company extends Model
     {
         // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
         return $this->belongsToMany(Service::class);
+    }
+
+    /**
+     * Company belongs to Products.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function products()
+    {
+        // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
+        return $this->belongsToMany(Product::class);
     }
 }

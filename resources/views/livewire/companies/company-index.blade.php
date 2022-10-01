@@ -126,6 +126,11 @@
                         {{ __('Services')}}
                       </th>
                     @endif
+                    @if(in_array("viewProducts", $permissions))
+                      <th scope="col" class="px-6 py-3 w-max">
+                        {{ __('Products')}}
+                      </th>
+                    @endif
                     <th scope="col" class="px-6 py-3 w-max rounded-tr-lg rounded-br-lg text-right">
                       {{__('Actions')}}
                     </th>
@@ -177,6 +182,14 @@
                           <a href="{{route('services.index.company', $company->id)}}" type='button' 
                              class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
                             {{$company->services->count()}} {{ __('Services') }}
+                          </a>
+                        @endif  
+                    </td>
+                    <td class="px-6 py-4 ">
+                        @if(in_array("viewProducts", $permissions))                     
+                          <a href="{{route('products.index.company', $company->id)}}" type='button' 
+                             class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
+                            {{$company->products->count()}} {{ __('Products') }}
                           </a>
                         @endif  
                     </td>

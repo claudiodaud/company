@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class BoxFactory extends Factory
+class ProductFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,8 +14,7 @@ class BoxFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),                
-            'user_id' => 1
+            //
         ];
     }
 }

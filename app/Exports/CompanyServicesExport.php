@@ -47,12 +47,12 @@ class CompanyServicesExport implements FromView
                                          ->orWhere('services.updated_at', 'like', '%'.$this->search.'%');                            
                                     })->orderBy('services.id', 'DESC')->onlyTrashed()->get();
                                        
-            }
-            
+            }            
             
             return view('exports.ServicesExport', [
             'services' => $services,
             ]); 
+            
         }else{
 
              if ($this->active == true) {
