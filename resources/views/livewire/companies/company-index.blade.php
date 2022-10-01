@@ -106,11 +106,7 @@
                         {{ __('Users')}}
                       </th>
                     @endif
-                    @if(in_array("viewContracts", $permissions))
-                      <th scope="col" class="px-6 py-3 w-max">
-                        {{ __('Contracts')}}
-                      </th>
-                    @endif
+                    
                     @if(in_array("viewRoles", $permissions))
                       <th scope="col" class="px-6 py-3 w-max">
                         {{ __('Roles')}}
@@ -153,14 +149,7 @@
                           </a>
                         @endif  
                     </td>
-                    <td class="px-6 py-4 ">
-                        @if(in_array("viewContracts", $permissions))                     
-                          <a href="{{route('contracts.index.company', $company->id)}}" type='button' 
-                             class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
-                            {{$company->contracts->count()}} {{ __('Contracts') }}
-                          </a>
-                        @endif  
-                    </td>
+                   
                     <td class="px-6 py-4 ">
                         @if(in_array("viewRoles", $permissions))                     
                           <a href="{{route('roles.index.company', $company->id)}}" type='button' 

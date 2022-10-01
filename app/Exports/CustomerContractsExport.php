@@ -3,13 +3,13 @@
 namespace App\Exports;
 
 
-use App\Models\Company;
+use App\Models\Customer;
 use App\Models\Contract;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
 
-class CompanyContractsExport implements FromView
+class CustomerContractsExport implements FromView
 {
     use Exportable;
 
@@ -31,18 +31,18 @@ class CompanyContractsExport implements FromView
     {
         
         if ($this->search != null) {
-            $contractsByCompany = Company::find($this->companyId)->contracts();
+            $contractsByCustomer = Customer::find($this->companyId)->contracts();
             
             if ($this->active == true) {
 
-                $contracts = $contractsByCompany->Where(function($query) {
+                $contracts = $contractsByCustomer->Where(function($query) {
                                  $query  ->orWhere('contracts.name', 'like', '%'.$this->search.'%')
                                          ->orWhere('contracts.created_at', 'like', '%'.$this->search.'%')
                                          ->orWhere('contracts.updated_at', 'like', '%'.$this->search.'%');                            
                                     })->orderBy('contracts.id', 'DESC')->get();
             }else{
 
-                 $contracts = $contractsByCompany->Where(function($query) {
+                 $contracts = $contractsByCustomer->Where(function($query) {
                                  $query  ->orWhere('contracts.name', 'like', '%'.$this->search.'%')
                                          ->orWhere('contracts.created_at', 'like', '%'.$this->search.'%')
                                          ->orWhere('contracts.updated_at', 'like', '%'.$this->search.'%');                            
@@ -52,23 +52,27 @@ class CompanyContractsExport implements FromView
             
             
             return view('exports.ContractExport', [
+
             'contracts' => $contracts,
+
             ]); 
 
         }else{
 
              if ($this->active == true) {
 
-                $contracts = Company::find($this->companyId)->contracts()->orderBy('contracts.id', 'DESC')->get();
+                $contracts = Customer::find($this->companyId)->contracts()->orderBy('contracts.id', 'DESC')->get();
 
             }else{
 
-                $contracts = Company::find($this->companyId)->contracts()->orderBy('contracts.id', 'DESC')->onlyTrashed()->get();
+                $contracts = Customer::find($this->companyId)->contracts()->orderBy('contracts.id', 'DESC')->onlyTrashed()->get();
 
             }    
             
             return view('exports.ContractExport', [
+
             'contracts' => $contracts,
+            
             ]);
         }
     }

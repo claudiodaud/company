@@ -2,6 +2,7 @@
   <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
       <span class="text-gray-400 uppercase">{{ __(App\Models\Company::find($companyId)->name.' /') }}</span> 
+      <span class="text-gray-400 ">{{ __(App\Models\Customer::find($customerId)->name.' /') }}</span> 
       <span class="text-gray-700">{{__(' Contracts Index')}}</span>
     </h2>
   </x-slot>
@@ -54,8 +55,8 @@
                         {{ __('Download') }}
                     </a>
                   @endif
-                    <a href="{{ route('companies.index') }}" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-40 py-3 sm:py-0 mt-2 sm:mt-0 sm:ml-2 ml-1'>
-                    {{ __('Return to company') }}
+                    <a href="{{ route('customers.index.company',$companyId) }}" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-40 py-3 sm:py-0 mt-2 sm:mt-0 sm:ml-2 ml-1'>
+                    {{ __('Return to customer') }}
                     </a>
                 </div>
               </div>

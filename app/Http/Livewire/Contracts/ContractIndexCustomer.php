@@ -2,9 +2,10 @@
 
 namespace App\Http\Livewire\Contracts;
 
-use App\Exports\CompanyContractsExport;
+use App\Exports\CustomerContractsExport;
 use App\Models\Company;
 use App\Models\Contract;
+use App\Models\Customer;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,7 @@ use Maatwebsite\Excel\Excel;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 
 
-class ContractIndexCompany extends Component
+class ContractIndexCustomer extends Component
 {
     use WithPagination;
 
@@ -31,9 +32,11 @@ class ContractIndexCompany extends Component
     
     //to delete dont touch...
     public $contractId; 
+    public $customerId;
+    public $companyId;
     public $passwordUser;
     public $password;
-    public $companyId = null; 
+    
 
 
     public $createNewContract = false; 
@@ -64,26 +67,27 @@ class ContractIndexCompany extends Component
 
     public function mount($id)
     {
-        $this->companyId = $id ; 
+        $this->customerId = $id ; 
+        $this->companyId = Customer::find($id)->company_id;
         $this->getPermissions();
     }
 
     public function render()
     {
-        $contractsByCompany = Company::find($this->companyId)->contracts();
+        $contractsByCustomer = Customer::find($this->customerId)->contracts();
         
         
         
         if ($this->active == true) {
 
-            $contracts = $contractsByCompany->Where(function($query) {
+            $contracts = $contractsByCustomer->Where(function($query) {
                              $query  ->orWhere('contracts.name', 'like', '%'.$this->search.'%')
                                      ->orWhere('contracts.created_at', 'like', '%'.$this->search.'%')
                                      ->orWhere('contracts.updated_at', 'like', '%'.$this->search.'%');                            
                                 })->orderBy('contracts.id', 'DESC')->paginate(10);
         }else{
 
-             $contracts = $contractsByCompany->Where(function($query) {
+             $contracts = $contractsByCustomer->Where(function($query) {
                              $query  ->orWhere('contracts.name', 'like', '%'.$this->search.'%')
                                      ->orWhere('contracts.created_at', 'like', '%'.$this->search.'%')
                                      ->orWhere('contracts.updated_at', 'like', '%'.$this->search.'%');                            
@@ -94,7 +98,7 @@ class ContractIndexCompany extends Component
         
         if(in_array("viewContracts", $this->permissions)){
             
-            return view('livewire.contracts.contract-index-company', [
+            return view('livewire.contracts.contract-index-customer', [
 
                 'contracts' => $contracts,
 
@@ -235,10 +239,9 @@ class ContractIndexCompany extends Component
 
         $contract = Contract::create([
             'name' => $this->name,                                    
-            'company_id' => $this->companyId,  
+            'customer_id' => $this->customerId,  
         ]);
 
-       
 
         $this->name = "";
         
@@ -276,7 +279,7 @@ class ContractIndexCompany extends Component
         $contract = Contract::find($this->contract->id)->update([
 
             'name' => $this->name,
-            'company_id' => $this->companyId,
+            'customer_id' => $this->customerId,
             
         ]);        
 
@@ -291,7 +294,7 @@ class ContractIndexCompany extends Component
     public function downloadContracts()
     {
        
-        return (new CompanyContractsExport(['search' => $this->search], ['companyId' => $this->companyId], ['active' => $this->active]))->download('contracts.xlsx'); 
+        return (new CustomerContractsExport(['search' => $this->search], ['customerId' => $this->customerId], ['active' => $this->active]))->download('contracts.xlsx'); 
        
     }
 
@@ -314,6 +317,7 @@ class ContractIndexCompany extends Component
     {
         
         $this->usersAddByContract = Contract::where('id',$contract_id)->with('users')->first();
+        
         $usersAddIds = [];
         foreach ($this->usersAddByContract->users as $key => $user) {
             array_push($usersAddIds,$user->id);
@@ -321,6 +325,7 @@ class ContractIndexCompany extends Component
 
 
         $this->usersAddByCompany = Company::where('id',$this->companyId)->with('users')->first();
+        
         $usersForAddIds = [];
         foreach ($this->usersAddByCompany->users as $key => $user) {
             array_push($usersForAddIds,$user->id);

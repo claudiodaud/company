@@ -109,7 +109,12 @@
                     </th>
                     <th scope="col" class="px-6 py-3 w-max">
                       {{ __('Name')}}
-                    </th>                                    
+                    </th>     
+                    @if(in_array("viewContracts", $permissions))
+                      <th scope="col" class="px-6 py-3 w-max">
+                        {{ __('Contracts')}}
+                      </th>
+                    @endif                               
                     <th scope="col" class="px-6 py-3 w-max rounded-tr-lg rounded-br-lg text-right">
                       {{__('Actions')}}
                     </th>
@@ -124,6 +129,14 @@
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap truncate ... w-max">
                       {{$customer->name}}
                     </th>
+                     <td class="px-6 py-4 ">
+                        @if(in_array("viewContracts", $permissions))                     
+                          <a href="{{route('contracts.index.customer', $customer->id)}}" type='button' 
+                             class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
+                            {{$customer->contracts->count()}} {{ __('Contracts') }}
+                          </a>
+                        @endif  
+                    </td>
                                         
                     @if($active == true)
                       <td class="px-6 py-4 text-right w-120">

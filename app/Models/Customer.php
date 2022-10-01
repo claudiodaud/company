@@ -43,4 +43,15 @@ class Customer extends Model
         // hasMany(RelatedModel, foreignKeyOnRelatedModel = user_id, localKey = id)
         return $this->hasMany(Quote::class);
     }
+
+    /**
+     * Company has many Contract.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function contracts()
+    {
+        // hasMany(RelatedModel, foreignKeyOnRelatedModel = company_id, localKey = id)
+        return $this->hasMany(Contract::class);
+    }
 }

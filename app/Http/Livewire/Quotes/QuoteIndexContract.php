@@ -32,7 +32,7 @@ class QuoteIndexContract extends Component
     public $forceDeleteQuote = false;
     public $restoreQuote = false;
     public $quoteId; 
-    public $companyId;
+    public $customerId;
     public $passwordQuote;
     public $contractId = null; 
 
@@ -62,7 +62,7 @@ class QuoteIndexContract extends Component
     {
         $this->contractId = $id ; 
 
-        $this->companyId = Contract::find($id)->company_id;
+        $this->customerId = Contract::find($id)->customer_id;
 
         $this->getPermissions();
     }

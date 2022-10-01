@@ -18,7 +18,7 @@ class Contract extends Model
      * @var string[]
      */
     protected $fillable = [
-        'name', 'company_id',
+        'name', 'customer_id',
     ];
 
     /**
@@ -33,14 +33,14 @@ class Contract extends Model
     }
 
     /**
-     * Contract belongs to Companies.
+     * Contract belongs to Customer.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function company()
+    public function customer()
     {
         // belongsTo(RelatedModel, foreignKey = companies_id, keyOnRelatedModel = id)
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Customer::class);
     }
 
     /**
