@@ -22,7 +22,20 @@ class Company extends Model
      * @var string[]
      */
     protected $fillable = [
-        'name','user_id',
+        'social_name',
+        'fantasy_name',
+        'email',
+        'phone',
+        'web',
+        'adress',
+        'dni',
+        'logo',
+        'headline_name',
+        'bank_name',
+        'type_account',
+        'account_number',
+        'notification_email',
+        'detail',
     ];
 
     

@@ -139,7 +139,7 @@
                       #{{$company->id}}
                     </td>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap truncate ... w-max">
-                      {{$company->name}}
+                      {{$company->social_name}}
                     </th>
                     <td class="px-6 py-4 ">
                         @if(in_array("viewUsers", $permissions))                    
@@ -345,11 +345,85 @@
 
       <x-slot name="content">
           
-        <div class="col-span-6 sm:col-span-4">
-            <x-jet-label for="name" value="{{ __('Name') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="text"  required autofocus wire:model="name"/>
-            <x-jet-input-error for="name" class="mt-2" />
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Social name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  required autofocus wire:model="social_name"/>
+            <x-jet-input-error for="social_name" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Fantasy name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="fantasy_name"/>
+            <x-jet-input-error for="fantasy_name" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Email') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="email"  autofocus wire:model="email"/>
+            <x-jet-input-error for="email" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Phone') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="phone"/>
+            <x-jet-input-error for="phone" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Web site') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="web"/>
+            <x-jet-input-error for="web" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Adress') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="adress"/>
+            <x-jet-input-error for="adress" class="mt-2" />
+        </div> 
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Dni') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="dni"/>
+            <x-jet-input-error for="dni" class="mt-2" />
+        </div> 
+        <div class="col-span-6 sm:col-span-4 py-2">
+            
+            
+
+            @if ($logo != null)
+                {{ __('Photo Preview:') }}
+                <img width="100px" src="{{ $logo->temporaryUrl() }}">
+            @endif
+            <x-jet-label for="name" value="{{ __('Logo') }}" />
+            <x-jet-input  class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="file"  autofocus wire:model="logo"/>
+            <x-jet-input-error for="logo" class="mt-2" />
+        </div>  
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Headline name') }}" />
+            <x-jet-input  class="block mt-1 w-full " type="text"  autofocus wire:model="headline_name"/>
+            <x-jet-input-error for="headline_name" class="mt-2" />
+        </div>      
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Bank name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="bank_name"/>
+            <x-jet-input-error for="bank_name" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Type account') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="type_account"/>
+            <x-jet-input-error for="type_account" class="mt-2" />
+        </div>
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Account number') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="account_number"/>
+            <x-jet-input-error for="account_number" class="mt-2" />
+        </div> 
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Notification email') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="notification_email"/>
+            <x-jet-input-error for="notification_email" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Detail') }}" />
+            
+            <textarea class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="text" rows="4" autofocus wire:model="detail"></textarea>
+            <x-jet-input-error for="detail" class="mt-2" />
         </div>        
+
          
       </x-slot>
 
@@ -373,11 +447,89 @@
 
       <x-slot name="content">
           
-        <div class="col-span-6 sm:col-span-4">
-            <x-jet-label for="name" value="{{ __('Name') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="text"  value="" required autofocus wire:model="name"/>
-            <x-jet-input-error for="name" class="mt-2" />
-        </div>        
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Social name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  required autofocus wire:model="social_name"/>
+            <x-jet-input-error for="social_name" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Fantasy name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="fantasy_name"/>
+            <x-jet-input-error for="fantasy_name" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Email') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="email"  autofocus wire:model="email"/>
+            <x-jet-input-error for="email" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Phone') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="phone"/>
+            <x-jet-input-error for="phone" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Web site') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="web"/>
+            <x-jet-input-error for="web" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Adress') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="adress"/>
+            <x-jet-input-error for="adress" class="mt-2" />
+        </div> 
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Dni') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="dni"/>
+            <x-jet-input-error for="dni" class="mt-2" />
+        </div> 
+        <div class="col-span-6 sm:col-span-4 py-2">
+            
+            @if($logo_saved != null)
+              Imagen Guardada:
+              <img class="rounded-xl" src="{{ url('storage/companies/'.$logo_saved) }}" alt="" width="200px">
+
+            @endif
+
+            @if ($logo != null)
+                {{ __('Photo Preview:') }}
+                <img width="100px" src="{{ $logo->temporaryUrl() }}">
+            @endif
+            <x-jet-label for="name" value="{{ __('Logo') }}" />
+            <x-jet-input  class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="file"  autofocus wire:model="logo"/>
+            <x-jet-input-error for="logo" class="mt-2" />
+        </div>  
+
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Headline name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="headline_name"/>
+            <x-jet-input-error for="headline_name" class="mt-2" />
+        </div>      
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Bank name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="bank_name"/>
+            <x-jet-input-error for="bank_name" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Type account') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="type_account"/>
+            <x-jet-input-error for="type_account" class="mt-2" />
+        </div>
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Account number') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="account_number"/>
+            <x-jet-input-error for="account_number" class="mt-2" />
+        </div> 
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Notification email') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="notification_email"/>
+            <x-jet-input-error for="notification_email" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Detail') }}" />
+            
+            <textarea class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="text" rows="4" autofocus wire:model="detail"></textarea>
+            <x-jet-input-error for="detail" class="mt-2" />
+        </div>               
          
       </x-slot>
 
@@ -415,7 +567,7 @@
                   <hr>
                   <div class="w-full flex justify-between mt-10">                   
                     <div class="text-sm text-gray-400">{{__('Name')}}:</div>                          
-                    <div class="text-sm text-gray-600">{{$companyShow->name}}</div>                            
+                    <div class="text-sm text-gray-600">{{$companyShow->social_name}}</div>                            
                   </div> 
                   @if(count($companyShow->users) > 0 )
                   <hr>                    
@@ -424,7 +576,7 @@
                     <div>
                       @foreach ($companyShow->users as $user)
                         <div class="w-full flex justify-between mt-4">                   
-                          <div class="text-xs text-gray-600">{{__('Name')}}: {{$user->name}}<br>
+                          <div class="text-xs text-gray-600">{{__('Name')}}: {{$user->social_name}}<br>
                             <div class="text-xs text-gray-400">{{__('Email')}}: {{$user->email}}</div>  
                           </div>                          
                                                     

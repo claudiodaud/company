@@ -15,11 +15,14 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Excel;
 use Spatie\Permission\Exceptions\UnauthorizedException;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 
 
 class CompanyIndex extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
 
 
@@ -43,16 +46,26 @@ class CompanyIndex extends Component
 
     public $search; 
 
-    public $name;
+    //Fields
+    public $social_name;
+    public $fantasy_name;
+    public $email;
+    public $phone;
+    public $web;
+    public $adress;
+    public $dni;
+    public $logo;
+    public $logo_saved; // saved actually logo update method
+    public $account_name;
+    public $bank_name;
+    public $type_account;
+    public $account_number;
+    public $notification_email;
+    public $detail;
 
     public $active = true;
 
     public $permissions;
-
-
-    protected $rules = [
-        'name' => 'required|string|max:70|min:1|unique:companies,name',        
-    ];
 
 
     public function mount()
@@ -62,6 +75,19 @@ class CompanyIndex extends Component
        
     }
 
+    public function updatedLogo()
+    {
+        
+
+        $this->validate([
+        
+            'logo' => 'image|mimes:jpg,jpeg,png,svg,gif|max:2048',
+       
+        ]);
+
+         
+    }
+
 
     public function render()
     {
@@ -69,14 +95,14 @@ class CompanyIndex extends Component
         if ($this->active == true) {
 
             $companies = $companiesByUser->Where(function($query) {
-                             $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
+                             $query  ->orWhere('companies.social_name', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
                                 })->orderBy('companies.id', 'DESC')->paginate(10);
         }else{
 
              $companies = $companiesByUser->Where(function($query) {
-                             $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
+                             $query  ->orWhere('companies.social_name', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
                                 })->orderBy('companies.id', 'DESC')->onlyTrashed()->paginate(10);
@@ -217,26 +243,83 @@ class CompanyIndex extends Component
  
     public function saveCompany()
     {
-        $this->validate();
+        $this->validate([
+            'social_name' => 'required|string|max:70|min:1',  
+            'fantasy_name' => 'string|max:70',
+            'email' => 'string|email|unique:companies,email',
+            'phone' => 'string|max:70|unique:companies,phone',
+            'web' => 'string|max:70',
+            'adress' => 'string|max:70',
+            'dni' => 'required|max:12|min:12|unique:companies,dni', 
+            'headline_name' => 'string|max:70',
+            'bank_name' => 'string|max:70',
+            'type_account' => 'string|max:70',
+            'account_number' => 'string|max:100|unique:companies,account_number',
+            'notification_email' => 'string|email',
+            'detail' => 'max:500',
+        ]);
  
         $company = Company::create([
-            'name' => $this->name,
+            'social_name' => $this->social_name,
+            'fantasy_name' => $this->fantasy_name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'web' => $this->web,
+            'adress' => $this->adress,
+            'dni' => $this->dni,
+            'logo' => $this->logo->hashName(),
+            'headline_name' => $this->headline_name,
+            'bank_name' => $this->bank_name,
+            'type_account' => $this->type_account,
+            'account_number' => $this->account_number,
+            'notification_email' => $this->notification_email,
+            'detail' => $this->detail,
+
         ]);
 
         $company->users()->sync(auth()->user()->id);
 
-        $this->name = "";
+        if ($this->logo ) {
+
+            $this->logo->store('companies','public');
+            
+        }
+        
+        
         $this->createNewCompany = false; 
         $this->active = true;
         $this->resetPage();
         $this->emit('created');
     }
 
-    public function updatedCreateNewCompany()
+    public function updatedcreateNewCompany()
     {
-        if ($this->createNewCompany == false) {
-            $this->name = "";
+        if($this->createNewCompany == true){
+            $this->clearFields();
         }
+    }
+
+    public function clearFields()
+    {
+        
+        //Clear fields
+        $this->social_name          = "";
+        $this->fantasy_name         = "";
+        $this->email                = "";
+        $this->phone                = "";
+        $this->web                  = "";
+        $this->adress               = "";
+        $this->dni                  = "";
+        $this->headline_name        = "";
+        $this->bank_name            = "";
+        $this->type_account         = "";
+        $this->account_number       = "";
+        $this->notification_email   = "";
+        $this->detail               = "";
+
+        $this->logo = [];
+        $this->logo_saved = "";
+       
     }
 
     public function editCompany($id)
@@ -246,22 +329,81 @@ class CompanyIndex extends Component
         
         $this->company = $company;
         
-        $this->name = $company->name;
+        $this->social_name          = $company->social_name;
+        $this->fantasy_name         = $company->fantasy_name;
+        $this->email                = $company->email;
+        $this->phone                = $company->phone;
+        $this->web                  = $company->web;
+        $this->adress               = $company->adress;
+        $this->dni                  = $company->dni;
+        $this->logo_saved           = $company->logo;
+        $this->headline_name        = $company->headline_name;
+        $this->bank_name            = $company->bank_name;
+        $this->type_account         = $company->type_account;
+        $this->account_number       = $company->account_number;
+        $this->notification_email   = $company->notification_email;
+        $this->detail               = $company->detail;
+
 
         $this->active = true;
 
         $this->editCompany = true; 
     }
 
+    public function updatededitCompany()
+    {
+        if($this->editCompany == false){
+            $this->clearFields();
+        }
+    }
+
     public function updateCompany()
     {
-        $this->validate();             
+        $this->validate([
+            'social_name' => 'required|string|max:70|min:1',  
+            'fantasy_name' => 'string|max:70',
+            'email' => 'string|email|unique:companies,email,'.$this->company->id.',id',
+            'phone' => 'string|max:70|unique:companies,phone,'.$this->company->id.',id',
+            'web' => 'string|max:70',
+            'adress' => 'string|max:70',
+            'dni' => 'required|max:12|min:12|unique:companies,dni,'.$this->company->id.',id', 
+            'headline_name' => 'string|max:70',
+            'bank_name' => 'string|max:70',
+            'type_account' => 'string|max:70',
+            'account_number' => 'string|max:100|unique:companies,account_number,'.$this->company->id.',id',
+            'notification_email' => 'string|email',
+            'detail' => 'max:500',
+        ]);            
 
         Company::find($this->company->id)->update([
 
-            'name' => $this->name,
-        ]);        
-        $this->name = null;     
+            'social_name' => $this->social_name,
+            'fantasy_name' => $this->fantasy_name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'web' => $this->web,
+            'adress' => $this->adress,
+            'dni' => $this->dni,
+            'logo' => $this->logo->hashName(),
+            'headline_name' => $this->headline_name,
+            'bank_name' => $this->bank_name,
+            'type_account' => $this->type_account,
+            'account_number' => $this->account_number,
+            'notification_email' => $this->notification_email,
+            'detail' => $this->detail,
+        ]);  
+
+        if ($this->logo != null) {
+
+            if ($this->logo_saved != null) {
+                Storage::delete('public/companies'.$this->logo_saved);
+            }            
+            
+
+            $this->logo->store('companies','public');
+            
+        }      
+            
         $this->company = null;
         $this->editCompany = false; 
         $this->active = true;
@@ -284,7 +426,8 @@ class CompanyIndex extends Component
     {
         $this->showCompany = false;
 
-        $this->companyShow = null;        
+        $this->companyShow = null;  
+
     }
 
     public function active($active)
