@@ -71,43 +71,55 @@ class RoleIndexCompany extends Component
 
     public function render()
     {
-        
-        $rolesByCompany = Company::find($this->companyId)->roles();
-        
-        
-        
-        if ($this->active == true) {
+        //verifico si el usuario pertenece a la compañia para mostrar los registros 
+        $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
+            $query->where('users.id',auth()->user()->id);
+        });
 
-            $roles = $rolesByCompany->Where(function($query) {
-                             $query  ->orWhere('roles.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('roles.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('roles.updated_at', 'like', '%'.$this->search.'%');                            
+        if(count($usersByCompany->get()) > 0){
+            $rolesByCompany = Company::find($this->companyId)->roles();
+        
+        
+        
+            if ($this->active == true) {
+
+                $roles = $rolesByCompany->Where(function($query) {
+                                $query  ->orWhere('roles.name', 'like', '%'.$this->search.'%')
+                                        ->orWhere('roles.created_at', 'like', '%'.$this->search.'%')
+                                        ->orWhere('roles.updated_at', 'like', '%'.$this->search.'%');                            
                                 })->orderBy('roles.id', 'DESC')->paginate(10);
-        }else{
+            }else{
 
-             $roles = $rolesByCompany->Where(function($query) {
-                             $query  ->orWhere('roles.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('roles.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('roles.updated_at', 'like', '%'.$this->search.'%');                            
+                $roles = $rolesByCompany->Where(function($query) {
+                                $query  ->orWhere('roles.name', 'like', '%'.$this->search.'%')
+                                        ->orWhere('roles.created_at', 'like', '%'.$this->search.'%')
+                                        ->orWhere('roles.updated_at', 'like', '%'.$this->search.'%');                            
                                 })->orderBy('roles.id', 'DESC')->onlyTrashed()->paginate(10);
-                                   
-        }            
+                                       
+            }            
 
-        
-
-        if(in_array("viewRoles", $this->permissions)){
             
-            return view('livewire.roles.role-index-company', [
 
-                'roles' => $roles,
+            if(in_array("viewRoles", $this->permissions)){
+                
+                return view('livewire.roles.role-index-company', [
 
-            ]);
+                    'roles' => $roles,
 
+                ]);
+
+            }else{
+
+                throw UnauthorizedException::forPermissions($this->permissions);
+
+            }
         }else{
 
-            throw UnauthorizedException::forPermissions($this->permissions);
+             throw UnauthorizedException::forPermissions($this->permissions);
 
         }
+        
+        
 
        
     }

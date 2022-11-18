@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Box;
+
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
     {
         Company::factory(3)->create();
         User::factory(10)->create();
-        Box::factory(10)->create();
-         
+        
     }
 }

@@ -66,37 +66,47 @@ class ServiceIndexCompany extends Component
 
     public function render()
     {
-        $servicesByCompany = Company::find($this->companyId)->services();
-        
-        
-        if ($this->active == true) {
+        $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
+            $query->where('users.id',auth()->user()->id);
+        });
 
-            $services = $servicesByCompany->Where(function($query) {
-                             $query  ->orWhere('services.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('services.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('services.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('services.id', 'DESC')->paginate(10);
-        }else{
-
-             $services = $servicesByCompany->Where(function($query) {
-                             $query  ->orWhere('services.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('services.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('services.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('services.id', 'DESC')->onlyTrashed()->paginate(10);
-                                   
-        }
- 
-        if(in_array("viewServices", $this->permissions)){
+        if(count($usersByCompany->get()) > 0){
+            $servicesByCompany = Company::find($this->companyId)->services();
             
-            return view('livewire.services.service-index-company', [
+            
+            if ($this->active == true) {
 
-                'services' => $services,
+                $services = $servicesByCompany->Where(function($query) {
+                                 $query  ->orWhere('services.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('services.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('services.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('services.id', 'DESC')->paginate(10);
+            }else{
 
-            ]);
+                 $services = $servicesByCompany->Where(function($query) {
+                                 $query  ->orWhere('services.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('services.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('services.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('services.id', 'DESC')->onlyTrashed()->paginate(10);
+                                       
+            }
+     
+            if(in_array("viewServices", $this->permissions)){
+                
+                return view('livewire.services.service-index-company', [
 
+                    'services' => $services,
+
+                ]);
+
+            }else{
+
+                throw UnauthorizedException::forPermissions($this->permissions);
+
+            }
         }else{
 
-            throw UnauthorizedException::forPermissions($this->permissions);
+             throw UnauthorizedException::forPermissions($this->permissions);
 
         }
     }

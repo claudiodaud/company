@@ -79,37 +79,46 @@ class UserIndexCompany extends Component
 
     public function render()
     {
-        $usersByCompany = Company::find($this->companyId)->users();
-        
-        
-        if ($this->active == true) {
 
-            $users = $usersByCompany->Where(function($query) {
-                             $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('users.id', 'DESC')->paginate(10);
+        $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
+            $query->where('users.id',auth()->user()->id);
+        });
+        
+        if(count($usersByCompany->get()) > 0){
+        
+            if ($this->active == true) {
+
+                $users = $usersByCompany->Where(function($query) {
+                                 $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('users.id', 'DESC')->paginate(10);
+            }else{
+
+                 $users = $usersByCompany->Where(function($query) {
+                                 $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('users.id', 'DESC')->onlyTrashed()->paginate(10);
+                                       
+            }
+     
+            if(in_array("viewUsers", $this->permissions)){
+                
+                return view('livewire.users.user-index-company', [
+
+                    'users' => $users,
+
+                ]);
+
+            }else{
+
+                throw UnauthorizedException::forPermissions($this->permissions);
+
+            }
         }else{
 
-             $users = $usersByCompany->Where(function($query) {
-                             $query  ->orWhere('users.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('users.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('users.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('users.id', 'DESC')->onlyTrashed()->paginate(10);
-                                   
-        }
- 
-        if(in_array("viewUsers", $this->permissions)){
-            
-            return view('livewire.users.user-index-company', [
-
-                'users' => $users,
-
-            ]);
-
-        }else{
-
-            throw UnauthorizedException::forPermissions($this->permissions);
+             throw UnauthorizedException::forPermissions($this->permissions);
 
         }
     }

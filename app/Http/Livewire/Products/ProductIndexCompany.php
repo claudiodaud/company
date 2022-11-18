@@ -66,37 +66,48 @@ class ProductIndexCompany extends Component
 
     public function render()
     {
-        $productsByCompany = Company::find($this->companyId)->products();
-        
-        
-        if ($this->active == true) {
+        $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
+            $query->where('users.id',auth()->user()->id);
+        });
 
-            $products = $productsByCompany->Where(function($query) {
-                             $query  ->orWhere('products.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('products.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('products.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('products.id', 'DESC')->paginate(10);
-        }else{
+        if(count($usersByCompany->get()) > 0){
 
-             $products = $productsByCompany->Where(function($query) {
-                             $query  ->orWhere('products.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('products.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('products.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('products.id', 'DESC')->onlyTrashed()->paginate(10);
-                                   
-        }
- 
-        if(in_array("viewProducts", $this->permissions)){
+            $productsByCompany = Company::find($this->companyId)->products();
             
-            return view('livewire.products.product-index-company', [
+            
+            if ($this->active == true) {
 
-                'products' => $products,
+                $products = $productsByCompany->Where(function($query) {
+                                 $query  ->orWhere('products.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('products.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('products.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('products.id', 'DESC')->paginate(10);
+            }else{
 
-            ]);
+                 $products = $productsByCompany->Where(function($query) {
+                                 $query  ->orWhere('products.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('products.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('products.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('products.id', 'DESC')->onlyTrashed()->paginate(10);
+                                       
+            }
+     
+            if(in_array("viewProducts", $this->permissions)){
+                
+                return view('livewire.products.product-index-company', [
 
+                    'products' => $products,
+
+                ]);
+
+            }else{
+
+                throw UnauthorizedException::forPermissions($this->permissions);
+
+            }
         }else{
 
-            throw UnauthorizedException::forPermissions($this->permissions);
+             throw UnauthorizedException::forPermissions($this->permissions);
 
         }
     }

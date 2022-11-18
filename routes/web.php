@@ -9,6 +9,8 @@ use App\Http\Livewire\Quotes\QuoteIndexContract;
 use App\Http\Livewire\Roles\RoleIndexCompany;
 use App\Http\Livewire\Services\ServiceIndexCompany;
 use App\Http\Livewire\Users\UserIndexCompany;
+use App\Models\Permission;
+use App\Models\User;
 use Illuminate\Auth\Middleware\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +28,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/permissions', function () {
+    $user = User::find(1);
+    $permissions = Permission::all();
+
+    foreach ($permissions as $key => $permission) {
+        
+        $user->givePermissionTo($permissions[18]->name);
+    }
+});
+
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
         

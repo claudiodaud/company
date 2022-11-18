@@ -74,39 +74,50 @@ class ContractIndexCustomer extends Component
 
     public function render()
     {
-        $contractsByCustomer = Customer::find($this->customerId)->contracts();
-        
-        
-        
-        if ($this->active == true) {
+        $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
+            $query->where('users.id',auth()->user()->id);
+        });
 
-            $contracts = $contractsByCustomer->Where(function($query) {
-                             $query  ->orWhere('contracts.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('contracts.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('contracts.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('contracts.id', 'DESC')->paginate(10);
-        }else{
+        if(count($usersByCompany->get()) > 0){
 
-             $contracts = $contractsByCustomer->Where(function($query) {
-                             $query  ->orWhere('contracts.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('contracts.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('contracts.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('contracts.id', 'DESC')->onlyTrashed()->paginate(10);
-                                   
-        }
- 
-        
-        if(in_array("viewContracts", $this->permissions)){
+            $contractsByCustomer = Customer::find($this->customerId)->contracts();
             
-            return view('livewire.contracts.contract-index-customer', [
+            
+            
+            if ($this->active == true) {
 
-                'contracts' => $contracts,
+                $contracts = $contractsByCustomer->Where(function($query) {
+                                 $query  ->orWhere('contracts.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('contracts.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('contracts.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('contracts.id', 'DESC')->paginate(10);
+            }else{
 
-            ]);
+                 $contracts = $contractsByCustomer->Where(function($query) {
+                                 $query  ->orWhere('contracts.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('contracts.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('contracts.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('contracts.id', 'DESC')->onlyTrashed()->paginate(10);
+                                       
+            }
+     
+            
+            if(in_array("viewContracts", $this->permissions)){
+                
+                return view('livewire.contracts.contract-index-customer', [
 
+                    'contracts' => $contracts,
+
+                ]);
+
+            }else{
+
+                throw UnauthorizedException::forPermissions($this->permissions);
+
+            }
         }else{
 
-            throw UnauthorizedException::forPermissions($this->permissions);
+             throw UnauthorizedException::forPermissions($this->permissions);
 
         }
     }

@@ -69,37 +69,48 @@ class QuoteIndexContract extends Component
 
     public function render()
     {
-        $quotesByContract = Contract::find($this->contractId)->quotes();
-        
-        
-        if ($this->active == true) {
+        $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
+            $query->where('users.id',auth()->user()->id);
+        });
 
-            $quotes = $quotesByContract->Where(function($query) {
-                             $query  ->orWhere('quotes.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('quotes.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('quotes.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('quotes.id', 'DESC')->paginate(10);
-        }else{
-
-             $quotes = $quotesByContract->Where(function($query) {
-                             $query  ->orWhere('quotes.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('quotes.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('quotes.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('quotes.id', 'DESC')->onlyTrashed()->paginate(10);
-                                   
-        }
- 
-        if(in_array("viewQuotes", $this->permissions)){
+        if(count($usersByCompany->get()) > 0){
             
-            return view('livewire.quotes.quote-index-contract', [
+            $quotesByContract = Contract::find($this->contractId)->quotes();
+            
+            
+            if ($this->active == true) {
 
-                'quotes' => $quotes,
+                $quotes = $quotesByContract->Where(function($query) {
+                                 $query  ->orWhere('quotes.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('quotes.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('quotes.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('quotes.id', 'DESC')->paginate(10);
+            }else{
 
-            ]);
+                 $quotes = $quotesByContract->Where(function($query) {
+                                 $query  ->orWhere('quotes.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('quotes.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('quotes.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('quotes.id', 'DESC')->onlyTrashed()->paginate(10);
+                                       
+            }
+     
+            if(in_array("viewQuotes", $this->permissions)){
+                
+                return view('livewire.quotes.quote-index-contract', [
 
+                    'quotes' => $quotes,
+
+                ]);
+
+            }else{
+
+                throw UnauthorizedException::forPermissions($this->permissions);
+
+            }
         }else{
 
-            throw UnauthorizedException::forPermissions($this->permissions);
+             throw UnauthorizedException::forPermissions($this->permissions);
 
         }
     }

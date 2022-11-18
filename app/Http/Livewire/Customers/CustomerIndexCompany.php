@@ -70,39 +70,50 @@ class CustomerIndexCompany  extends Component
 
     public function render()
     {
-        $customersByCompany = Company::find($this->companyId)->customers();
-        
-        
-        
-        if ($this->active == true) {
+        $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
+            $query->where('users.id',auth()->user()->id);
+        });
 
-            $customers = $customersByCompany->Where(function($query) {
-                             $query  ->orWhere('customers.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('customers.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('customers.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('customers.id', 'DESC')->paginate(10);
-        }else{
+        if(count($usersByCompany->get()) > 0){
 
-             $customers = $customersByCompany->Where(function($query) {
-                             $query  ->orWhere('customers.name', 'like', '%'.$this->search.'%')
-                                     ->orWhere('customers.created_at', 'like', '%'.$this->search.'%')
-                                     ->orWhere('customers.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('customers.id', 'DESC')->onlyTrashed()->paginate(10);
-                                   
-        }
- 
-        
-        if(in_array("viewCustomers", $this->permissions)){
+            $customersByCompany = Company::find($this->companyId)->customers();
             
-            return view('livewire.customers.customer-index-company', [
+            
+            
+            if ($this->active == true) {
 
-                'customers' => $customers,
+                $customers = $customersByCompany->Where(function($query) {
+                                 $query  ->orWhere('customers.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('customers.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('customers.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('customers.id', 'DESC')->paginate(10);
+            }else{
 
-            ]);
+                 $customers = $customersByCompany->Where(function($query) {
+                                 $query  ->orWhere('customers.name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('customers.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('customers.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('customers.id', 'DESC')->onlyTrashed()->paginate(10);
+                                       
+            }
+     
+            
+            if(in_array("viewCustomers", $this->permissions)){
+                
+                return view('livewire.customers.customer-index-company', [
 
+                    'customers' => $customers,
+
+                ]);
+
+            }else{
+
+                throw UnauthorizedException::forPermissions($this->permissions);
+
+            }
         }else{
 
-            throw UnauthorizedException::forPermissions($this->permissions);
+             throw UnauthorizedException::forPermissions($this->permissions);
 
         }
     }

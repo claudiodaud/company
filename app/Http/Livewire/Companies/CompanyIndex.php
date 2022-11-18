@@ -267,7 +267,7 @@ class CompanyIndex extends Component
             'web' => $this->web,
             'adress' => $this->adress,
             'dni' => $this->dni,
-            'logo' => $this->logo->hashName(),
+            //'logo' => $this->logo->hashName(),
             'headline_name' => $this->headline_name,
             'bank_name' => $this->bank_name,
             'type_account' => $this->type_account,
