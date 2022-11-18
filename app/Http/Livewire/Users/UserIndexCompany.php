@@ -79,13 +79,15 @@ class UserIndexCompany extends Component
 
     public function render()
     {
-
+        //evaluamos si el usuario pertenece a la compañia. 
         $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
             $query->where('users.id',auth()->user()->id);
         });
-        
+        //si el usuario pertenece a la compañia mostramos los registros 
+        // si el usuario no pertence a la compañia mostramos un error 403 sin autorización 
+
         if(count($usersByCompany->get()) > 0){
-        
+            
             if ($this->active == true) {
 
                 $users = $usersByCompany->Where(function($query) {
@@ -102,7 +104,16 @@ class UserIndexCompany extends Component
                                     })->orderBy('users.id', 'DESC')->onlyTrashed()->paginate(10);
                                        
             }
-     
+            //ahora evealuamos como segunda capa que el usuario tenga el permiso para ver el modulo 
+            //si la respuesta es si le mostramos los registros 
+            //si  la respuesta es no le mostramos un error 403 sin autorización
+            
+            // NOTA IMPORTANTE !!!
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // DE ESTA FORMA PROTEGEMOS LA RUTA SI ES QUE ALGUN USUARIO CREATIVO DIGITA LA RUTA DE OTRO REGISTROS APROVECHANDO LOS IDS      //
+            // LUEGO EN UNA SEGUNDA CAPA VALIDAMOS LOS PERMISOS QUE HAN SIDO RELAMENTE ASIGNADOS AL USUARIO                                 //
+            // CON ESTO TENEMOS MAXIMA PROTECCION EN LA PROTECCION DE DATOS DE USUARIOS DISTINTOS                                           //
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(in_array("viewUsers", $this->permissions)){
                 
                 return view('livewire.users.user-index-company', [
