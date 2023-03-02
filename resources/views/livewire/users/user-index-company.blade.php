@@ -14,7 +14,7 @@
           {{--Component Table--}}
 
           <div class="shadow-md sm:rounded-lg">
-            <div class="p-4 ">
+            <div class="p-4 pr-4">
               <div class="block sm:flex sm:justify-between">
                 <div class="block sm:flex justify-start ">
                   <div class="relative">
@@ -28,6 +28,7 @@
                       <input type="text" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 py-3  sm:mx-0 sm:mr-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full sm:w-60" placeholder="Search for items" wire:model="search">
                   @endif
                 </div>
+
                     
                 @if(in_array("user.deleted", $permissions))    
                   @if($active == true)
@@ -41,12 +42,18 @@
                   @endif
                 @endif 
                 </div> 
-              
+                
+                
               
                 <div class="flex sm:justify-end">
                   @if(in_array("user.create", $permissions))
-                    <a wire:click="$toggle('createNewCompany')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-40 py-3 sm:py-0 mt-2 sm:mt-0 sm:mx-2 mr-1'>
+                    <a wire:click="$toggle('createNewUser')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-35 py-3 sm:py-0 mt-2 sm:mt-0 sm:mx-2 mr-1'>
                         {{ __('Create New') }}
+                    </a>
+                  @endif
+                  @if(in_array("user.create", $permissions))
+                    <a wire:click="$toggle('addExitingUser')" type='button' class='inline-flex items-center bg-black px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:text-gray-200 hover:bg-gray-700 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-35 py-3 sm:py-0 mt-2 sm:mt-0 sm:mx-2 mr-1'>
+                        {{ __('Add Existing') }}
                     </a>
                   @endif
                   @if(in_array("user.download", $permissions))
@@ -54,7 +61,7 @@
                         {{ __('Download') }}
                     </a>
                   @endif
-                    <a href="{{ route('companies.index') }}" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-40 py-3 sm:py-0 mt-2 sm:mt-0 sm:ml-2 ml-1'>
+                    <a href="{{ route('companies.index') }}" type='button' class='inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition w-full sm:w-45 py-3 sm:py-0 mt-2 sm:mt-0 sm:ml-2 ml-1 '>
                     {{ __('Return to company') }}
                     </a>
                 </div>
@@ -555,6 +562,38 @@
               {{ __('Return') }}
           </x-jet-secondary-button>      
       </x-slot>
-  </x-jet-dialog-modal>   
+  </x-jet-dialog-modal>  
+
+  <!-- Add existing user Modal -->
+  <x-jet-dialog-modal wire:model="addExitingUser"> 
+      <x-slot name="title">
+          {{ __('Add Exiting User') }}
+      </x-slot>
+
+      <x-slot name="content">        
+
+
+            <div class="mt-4">
+                <x-jet-label for="email" value="{{ __('Email') }}" />
+                <x-jet-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" required wire:model="findEmail"/>
+                <x-jet-input-error for="email" class="mt-2" />
+                <p class="p-1">{{$msg}}</p>
+            </div>
+                    
+         
+      </x-slot>
+
+      <x-slot name="footer">
+          <x-jet-secondary-button wire:click="$toggle('addExitingUser')" wire:loading.attr="disabled">
+              {{ __('Cancel') }}
+          </x-jet-secondary-button>
+
+          @if($this->userFound)
+          <x-jet-danger-button class="ml-3 " wire:click="addExitingUser" wire:loading.attr="disabled">
+              {{ __('add Exiting User') }}
+          </x-jet-danger-button>
+          @endif
+      </x-slot>
+  </x-jet-dialog-modal> 
 
 </div>

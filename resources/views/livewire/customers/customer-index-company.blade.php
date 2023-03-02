@@ -127,7 +127,7 @@
                       #{{$customer->id}}
                     </td>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap truncate ... w-max">
-                      {{$customer->name}}
+                      {{$customer->social_name}}
                     </th>
                      <td class="px-6 py-4 ">
                         @if(in_array("viewContracts", $permissions))                     

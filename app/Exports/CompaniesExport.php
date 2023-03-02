@@ -32,14 +32,16 @@ class CompaniesExport implements FromView
             if ($this->active == true) {
 
                 $companies = $companiesByUser->Where(function($query) {
-                                 $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
+                                 $query  ->orWhere('companies.social_name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.fantasy_name', 'like', '%'.$this->search.'%')   
                                          ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
                                          ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
                                     })->orderBy('companies.id', 'DESC')->get();
             }else{
 
                  $companies = $companiesByUser->Where(function($query) {
-                                 $query  ->orWhere('companies.name', 'like', '%'.$this->search.'%')
+                                 $query  ->orWhere('companies.social_name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.fantasy_name', 'like', '%'.$this->search.'%')
                                          ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
                                          ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
                                     })->orderBy('companies.id', 'DESC')->onlyTrashed()->get();

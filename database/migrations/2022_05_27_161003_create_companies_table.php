@@ -16,29 +16,23 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             
             $table->id();
+
+            
             
             //Company info
+            $table->boolean('type')->default(0);
             $table->string('social_name');
             $table->string('fantasy_name')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('web')->nullable();
-            $table->string('adress')->nullable();            
             $table->string('dni')->nullable();
-            $table->string('logo')->nullable();
-
-            //Bank account info
-            $table->string('headline_name')->nullable();            
-            $table->string('bank_name')->nullable();            
-            $table->string('type_account')->nullable();
-            $table->string('account_number')->nullable();
-            $table->string('notification_email')->nullable();
-
-            $table->string('detail')->nullable();
+            $table->string('logo_photo_path')->nullable();
+            $table->text('detail');
 
             $table->softDeletes();
             $table->timestamps();
         });
+
+
+        
     }
 
     /**
@@ -49,5 +43,6 @@ class CreateCompaniesTable extends Migration
     public function down()
     {
         Schema::dropIfExists('companies');
+        
     }
 }

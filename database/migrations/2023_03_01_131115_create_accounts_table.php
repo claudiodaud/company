@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCompanyProductTable extends Migration
+class CreateAccountsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,19 @@ class CreateCompanyProductTable extends Migration
      */
     public function up()
     {
-        Schema::create('company_product', function (Blueprint $table) {
+        Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('products')->onUpdate('cascade')->onDelete('cascade');
+            //Bank account info
+            $table->string('headline_name')->nullable();            
+            $table->string('bank_name')->nullable();            
+            $table->string('type_account')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('notification_email')->nullable();
+            
+            //timestamps
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -30,6 +37,6 @@ class CreateCompanyProductTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company_product');
+        Schema::dropIfExists('accounts');
     }
 }

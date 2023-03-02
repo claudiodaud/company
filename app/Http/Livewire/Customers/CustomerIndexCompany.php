@@ -17,6 +17,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Excel;
 use Spatie\Permission\Exceptions\UnauthorizedException;
+use DB;
 
 
 class CustomerIndexCompany  extends Component
@@ -76,24 +77,30 @@ class CustomerIndexCompany  extends Component
 
         if(count($usersByCompany->get()) > 0){
 
+
+            
+
             $customersByCompany = Company::find($this->companyId)->customers();
             
+           
             
             
             if ($this->active == true) {
 
                 $customers = $customersByCompany->Where(function($query) {
-                                 $query  ->orWhere('customers.name', 'like', '%'.$this->search.'%')
-                                         ->orWhere('customers.created_at', 'like', '%'.$this->search.'%')
-                                         ->orWhere('customers.updated_at', 'like', '%'.$this->search.'%');                            
-                                    })->orderBy('customers.id', 'DESC')->paginate(10);
+                                 $query  ->orWhere('companies.social_name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.fantasy_name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('companies.id', 'DESC')->paginate(10);
             }else{
 
                  $customers = $customersByCompany->Where(function($query) {
-                                 $query  ->orWhere('customers.name', 'like', '%'.$this->search.'%')
-                                         ->orWhere('customers.created_at', 'like', '%'.$this->search.'%')
-                                         ->orWhere('customers.updated_at', 'like', '%'.$this->search.'%');                            
-                                    })->orderBy('customers.id', 'DESC')->onlyTrashed()->paginate(10);
+                                 $query  ->orWhere('companies.social_name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.fantasy_name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('companies.id', 'DESC')->onlyTrashed()->paginate(10);
                                        
             }
      

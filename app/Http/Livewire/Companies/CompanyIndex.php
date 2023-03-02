@@ -49,18 +49,11 @@ class CompanyIndex extends Component
     //Fields
     public $social_name;
     public $fantasy_name;
-    public $email;
-    public $phone;
-    public $web;
-    public $adress;
+   
     public $dni;
-    public $logo;
-    public $logo_saved; // saved actually logo update method
-    public $account_name;
-    public $bank_name;
-    public $type_account;
-    public $account_number;
-    public $notification_email;
+    public $logo_photo_path;
+    public $logo_saved; // saved actually logo_photo_path update method
+    
     public $detail;
 
     public $active = true;
@@ -81,8 +74,9 @@ class CompanyIndex extends Component
 
         $this->validate([
         
-            'logo' => 'image|mimes:jpg,jpeg,png,svg,gif|max:2048',
-       
+            'logo_photo_path' => 'image|mimes:jpg,jpeg,png,svg,gif|size:30720',
+            // 'image' => 'required|image|size:1024||dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'
+            //'image' => 'required|image|size:1024|dimensions:ratio=3/2'
         ]);
 
          
@@ -92,22 +86,27 @@ class CompanyIndex extends Component
     public function render()
     {
         $companiesByUser = User::find(auth()->user()->id)->companies();
+
         if ($this->active == true) {
 
             $companies = $companiesByUser->Where(function($query) {
                              $query  ->orWhere('companies.social_name', 'like', '%'.$this->search.'%')
+                                     ->orWhere('companies.fantasy_name', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('companies.id', 'DESC')->paginate(10);
+                                })->orderBy('companies.id', 'DESC')->where('companies.type',0)->paginate(10);
         }else{
 
              $companies = $companiesByUser->Where(function($query) {
                              $query  ->orWhere('companies.social_name', 'like', '%'.$this->search.'%')
+                                     ->orWhere('companies.fantasy_name', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
                                      ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
-                                })->orderBy('companies.id', 'DESC')->onlyTrashed()->paginate(10);
+                                })->orderBy('companies.id', 'DESC')->where('companies.type',0)->onlyTrashed()->paginate(10);
                                    
         }
+
+
                                 
         if(in_array("viewCompanies", $this->permissions)){
 
@@ -245,44 +244,48 @@ class CompanyIndex extends Component
     {
         $this->validate([
             'social_name' => 'required|string|max:70|min:1',  
-            'fantasy_name' => 'string|max:70',
-            'email' => 'string|email|unique:companies,email',
-            'phone' => 'string|max:70|unique:companies,phone',
-            'web' => 'string|max:70',
-            'adress' => 'string|max:70',
-            'dni' => 'required|max:12|min:12|unique:companies,dni', 
-            'headline_name' => 'string|max:70',
-            'bank_name' => 'string|max:70',
-            'type_account' => 'string|max:70',
-            'account_number' => 'string|max:100|unique:companies,account_number',
-            'notification_email' => 'string|email',
+            'fantasy_name' => 'required|string|max:70',
+            // 'email' => 'string|email|unique:companies,email',
+            // 'phone' => 'string|max:70|unique:companies,phone',
+            // 'web' => 'string|max:70',
+            // 'adress' => 'string|max:70',
+            'dni' => 'required|max:12|min:12', 
+            // 'headline_name' => 'string|max:70',
+            // 'bank_name' => 'string|max:70',
+            // 'type_account' => 'string|max:70',
+            // 'account_number' => 'string|max:100|unique:companies,account_number',
+            // 'notification_email' => 'string|email',
             'detail' => 'max:500',
         ]);
  
         $company = Company::create([
+            'type' => 0,
             'social_name' => $this->social_name,
             'fantasy_name' => $this->fantasy_name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'web' => $this->web,
-            'adress' => $this->adress,
+            // 'email' => $this->email,
+            // 'phone' => $this->phone,
+            // 'web' => $this->web,
+            // 'adress' => $this->adress,
             'dni' => $this->dni,
-            //'logo' => $this->logo->hashName(),
-            'headline_name' => $this->headline_name,
-            'bank_name' => $this->bank_name,
-            'type_account' => $this->type_account,
-            'account_number' => $this->account_number,
-            'notification_email' => $this->notification_email,
+            
+            // 'headline_name' => $this->headline_name,
+            // 'bank_name' => $this->bank_name,
+            // 'type_account' => $this->type_account,
+            // 'account_number' => $this->account_number,
+            // 'notification_email' => $this->notification_email,
             'detail' => $this->detail,
 
         ]);
 
         $company->users()->sync(auth()->user()->id);
 
-        if ($this->logo ) {
+        if ($this->logo_photo_path ) {
 
-            $this->logo->store('companies','public');
+            $this->logo_photo_path->store('companies','public');
             
+            Company::find($company)->update([
+            'logo_photo_path' => $this->logo_photo_path->hashName(),
+            ]);
         }
         
         
@@ -305,43 +308,44 @@ class CompanyIndex extends Component
         //Clear fields
         $this->social_name          = "";
         $this->fantasy_name         = "";
-        $this->email                = "";
-        $this->phone                = "";
-        $this->web                  = "";
-        $this->adress               = "";
+        // $this->email                = "";
+        // $this->phone                = "";
+        // $this->web                  = "";
+        // $this->adress               = "";
         $this->dni                  = "";
-        $this->headline_name        = "";
-        $this->bank_name            = "";
-        $this->type_account         = "";
-        $this->account_number       = "";
-        $this->notification_email   = "";
+        // $this->headline_name        = "";
+        // $this->bank_name            = "";
+        // $this->type_account         = "";
+        // $this->account_number       = "";
+        // $this->notification_email   = "";
         $this->detail               = "";
 
-        $this->logo = [];
+        $this->logo_photo_path = "";
         $this->logo_saved = "";
        
     }
 
     public function editCompany($id)
     {
-        
+        $this->clearFields();
+
         $company = Company::find($id);   
         
         $this->company = $company;
         
         $this->social_name          = $company->social_name;
         $this->fantasy_name         = $company->fantasy_name;
-        $this->email                = $company->email;
-        $this->phone                = $company->phone;
-        $this->web                  = $company->web;
-        $this->adress               = $company->adress;
+        // $this->email                = $company->email;
+        // $this->phone                = $company->phone;
+        // $this->web                  = $company->web;
+        // $this->adress               = $company->adress;
         $this->dni                  = $company->dni;
-        $this->logo_saved           = $company->logo;
-        $this->headline_name        = $company->headline_name;
-        $this->bank_name            = $company->bank_name;
-        $this->type_account         = $company->type_account;
-        $this->account_number       = $company->account_number;
-        $this->notification_email   = $company->notification_email;
+        $this->logo_saved           = $company->logo_photo_path;
+        // $this->headline_name        = $company->headline_name;
+        // $this->bank_name            = $company->bank_name;
+        // $this->type_account         = $company->type_account;
+        // $this->account_number       = $company->account_number;
+        // $this->notification_email   = $company->notification_email;
         $this->detail               = $company->detail;
 
 
@@ -362,16 +366,16 @@ class CompanyIndex extends Component
         $this->validate([
             'social_name' => 'required|string|max:70|min:1',  
             'fantasy_name' => 'string|max:70',
-            'email' => 'string|email|unique:companies,email,'.$this->company->id.',id',
-            'phone' => 'string|max:70|unique:companies,phone,'.$this->company->id.',id',
-            'web' => 'string|max:70',
-            'adress' => 'string|max:70',
-            'dni' => 'required|max:12|min:12|unique:companies,dni,'.$this->company->id.',id', 
-            'headline_name' => 'string|max:70',
-            'bank_name' => 'string|max:70',
-            'type_account' => 'string|max:70',
-            'account_number' => 'string|max:100|unique:companies,account_number,'.$this->company->id.',id',
-            'notification_email' => 'string|email',
+            // 'email' => 'string|email|unique:companies,email,'.$this->company->id.',id',
+            // 'phone' => 'string|max:70|unique:companies,phone,'.$this->company->id.',id',
+            // 'web' => 'string|max:70',
+            // 'adress' => 'string|max:70',
+            'dni' => 'required|max:12|min:12', // unique:companies,dni,'.$this->company->id.',id', 
+            // 'headline_name' => 'string|max:70',
+            // 'bank_name' => 'string|max:70',
+            // 'type_account' => 'string|max:70',
+            // 'account_number' => 'string|max:100|unique:companies,account_number,'.$this->company->id.',id',
+            // 'notification_email' => 'string|email',
             'detail' => 'max:500',
         ]);            
 
@@ -379,28 +383,36 @@ class CompanyIndex extends Component
 
             'social_name' => $this->social_name,
             'fantasy_name' => $this->fantasy_name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'web' => $this->web,
-            'adress' => $this->adress,
+            // 'email' => $this->email,
+            // 'phone' => $this->phone,
+            // 'web' => $this->web,
+            // 'adress' => $this->adress,
             'dni' => $this->dni,
-            'logo' => $this->logo->hashName(),
-            'headline_name' => $this->headline_name,
-            'bank_name' => $this->bank_name,
-            'type_account' => $this->type_account,
-            'account_number' => $this->account_number,
-            'notification_email' => $this->notification_email,
+            //'logo_photo_path' => $this->logo_photo_path->hashName(),
+            // 'headline_name' => $this->headline_name,
+            // 'bank_name' => $this->bank_name,
+            // 'type_account' => $this->type_account,
+            // 'account_number' => $this->account_number,
+            // 'notification_email' => $this->notification_email,
             'detail' => $this->detail,
         ]);  
 
-        if ($this->logo != null) {
+        if ($this->logo_photo_path != null) {
 
             if ($this->logo_saved != null) {
                 Storage::delete('public/companies'.$this->logo_saved);
             }            
             
 
-            $this->logo->store('companies','public');
+            $this->logo_photo_path->store('companies','public');
+
+            
+            Company::find($this->company->id)->update([
+
+            
+                'logo_photo_path' => $this->logo_photo_path->hashName(),
+            
+            ]); 
             
         }      
             

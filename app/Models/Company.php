@@ -22,19 +22,11 @@ class Company extends Model
      * @var string[]
      */
     protected $fillable = [
-        'social_name',
+        'type',
         'fantasy_name',
-        'email',
-        'phone',
-        'web',
-        'adress',
+        'social_name',                
         'dni',
-        'logo',
-        'headline_name',
-        'bank_name',
-        'type_account',
-        'account_number',
-        'notification_email',
+        'logo_photo_path',        
         'detail',
     ];
 
@@ -64,17 +56,7 @@ class Company extends Model
         return $this->belongsToMany(Role::class);
     }
 
-    /**
-     * Company has many Contract.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function customers()
-    {
-        // hasMany(RelatedModel, foreignKeyOnRelatedModel = company_id, localKey = id)
-        return $this->hasMany(Customer::class);
-    }
-
+   
     /**
      * Company belongs to Services.
      *
@@ -96,4 +78,44 @@ class Company extends Model
         // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
         return $this->belongsToMany(Product::class);
     }
+
+
+    /**
+     * Company has many Contract.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function contracts()
+    {
+        // hasMany(RelatedModel, foreignKeyOnRelatedModel = company_id, localKey = id)
+        return $this->hasMany(Contract::class);
+    }
+
+    
+    /**
+     * Company belongs to Customers.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function customers()
+    {
+        // belongsTo(RelatedModel, foreignKey = customers_id, keyOnRelatedModel = id)
+        return $this->belongsToMany(Company::class,'supplier_customer','supplier_id','customer_id');
+    }
+
+
+    /**
+     * Company belongs to Customers.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function supplier()
+    {
+        // belongsTo(RelatedModel, foreignKey = customers_id, keyOnRelatedModel = id)
+        return $this->belongsToMany(Company::class,'supplier_customer','customer_id','supplier_id');
+    }
+
+
+
+    
 }

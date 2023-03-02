@@ -36,6 +36,11 @@ class UserIndexCompany extends Component
 
 
     public $createNewUser = false; 
+    public $addExitingUser = false; 
+
+    public $findEmail;
+    public $userFound;
+    public $msg;
 
 
     public $userEdit;
@@ -80,9 +85,13 @@ class UserIndexCompany extends Component
     public function render()
     {
         //evaluamos si el usuario pertenece a la compañia. 
-        $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
-            $query->where('users.id',auth()->user()->id);
-        });
+        // $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
+        //     $query->where('users.id',auth()->user()->id);
+        // });
+
+        $usersByCompany = Company::find($this->companyId)->users();
+
+        //dd($usersByCompany);
         //si el usuario pertenece a la compañia mostramos los registros 
         // si el usuario no pertence a la compañia mostramos un error 403 sin autorización 
 
@@ -222,7 +231,8 @@ class UserIndexCompany extends Component
         }else{    
 
             $user = User::withTrashed()->find($this->userId);
-            $user->forceDelete();
+            //$user->forceDelete(); // tiene el potencial de borrar usuarios que podrian estar en otras compañias 
+            $user->companies()->detach($this->companyId);
             $this->forceDeleteUser = false;
             $this->password = null;
             $this->userId = null;
@@ -283,6 +293,8 @@ class UserIndexCompany extends Component
     {
         if ($this->createNewUser == false) {
             $this->name = "";
+            $this->email = "";
+            $this->password = "";
         }
     }
 
@@ -473,6 +485,41 @@ class UserIndexCompany extends Component
     {
         
         $this->active = $active;
+    }
+
+
+    public function updatedFindEmail()
+    {
+        $this->userFound = User::where('email',$this->findEmail)->first();
+
+        if ($this->userFound) {
+
+            $this->msg = "User Found !";
+
+        }else{
+
+            $this->msg = "User not Found";
+        }
+    }
+
+
+    public function addExitingUser()
+    {
+        $user = User::where('email',$this->findEmail)->first();
+
+        
+
+        if ($user) {
+
+            $user->companies()->sync($this->companyId);
+
+            $this->findEmail = "";
+            $this->addExitingUser = false;
+            $this->userNotFound = "";
+
+            $this->emit('updated');
+        }
+        
     }
 
 

@@ -164,23 +164,23 @@
                              class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
                             {{$company->customers->count()}} {{ __('Customers') }}
                           </a>
-                        @endif  
+                        @endif   
                     </td>
                     <td class="px-6 py-4 ">
-                        @if(in_array("viewServices", $permissions))                     
+                       {{--  @if(in_array("viewServices", $permissions))                     
                           <a href="{{route('services.index.company', $company->id)}}" type='button' 
                              class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
                             {{$company->services->count()}} {{ __('Services') }}
                           </a>
-                        @endif  
+                        @endif   --}}
                     </td>
                     <td class="px-6 py-4 ">
-                        @if(in_array("viewProducts", $permissions))                     
+                       {{--  @if(in_array("viewProducts", $permissions))                     
                           <a href="{{route('products.index.company', $company->id)}}" type='button' 
                              class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
                             {{$company->products->count()}} {{ __('Products') }}
                           </a>
-                        @endif  
+                        @endif   --}}
                     </td>
                     @if($active == true)
                       <td class="px-6 py-4 text-right w-120">
@@ -355,44 +355,23 @@
             <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="fantasy_name"/>
             <x-jet-input-error for="fantasy_name" class="mt-2" />
         </div>   
-        <div class="col-span-6 sm:col-span-4 py-2">
-            <x-jet-label for="name" value="{{ __('Email') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="email"  autofocus wire:model="email"/>
-            <x-jet-input-error for="email" class="mt-2" />
-        </div>   
-        <div class="col-span-6 sm:col-span-4 py-2">
-            <x-jet-label for="name" value="{{ __('Phone') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="phone"/>
-            <x-jet-input-error for="phone" class="mt-2" />
-        </div>   
-        <div class="col-span-6 sm:col-span-4 py-2">
-            <x-jet-label for="name" value="{{ __('Web site') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="web"/>
-            <x-jet-input-error for="web" class="mt-2" />
-        </div>   
-        <div class="col-span-6 sm:col-span-4 py-2">
-            <x-jet-label for="name" value="{{ __('Adress') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="adress"/>
-            <x-jet-input-error for="adress" class="mt-2" />
-        </div> 
+        
+        
         <div class="col-span-6 sm:col-span-4 py-2">
             <x-jet-label for="name" value="{{ __('Dni') }}" />
             <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="dni"/>
             <x-jet-input-error for="dni" class="mt-2" />
         </div> 
         <div class="col-span-6 sm:col-span-4 py-2">
-            
-            
-
-            @if ($logo != null)
+            @if ($logo_photo_path)
                 {{ __('Photo Preview:') }}
-                <img width="100px" src="{{ $logo->temporaryUrl() }}">
+                <img width="100px" src="{{ $logo_photo_path->temporaryUrl() }}">
             @endif
             <x-jet-label for="name" value="{{ __('Logo') }}" />
-            <x-jet-input  class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="file"  autofocus wire:model="logo"/>
+            <x-jet-input  class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="file"  autofocus wire:model="logo_photo_path"/>
             <x-jet-input-error for="logo" class="mt-2" />
         </div>  
-        <div class="col-span-6 sm:col-span-4 py-2">
+        {{-- <div class="col-span-6 sm:col-span-4 py-2">
             <x-jet-label for="name" value="{{ __('Headline name') }}" />
             <x-jet-input  class="block mt-1 w-full " type="text"  autofocus wire:model="headline_name"/>
             <x-jet-input-error for="headline_name" class="mt-2" />
@@ -416,9 +395,9 @@
             <x-jet-label for="name" value="{{ __('Notification email') }}" />
             <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="notification_email"/>
             <x-jet-input-error for="notification_email" class="mt-2" />
-        </div>   
+        </div> --}}   
         <div class="col-span-6 sm:col-span-4 py-2">
-            <x-jet-label for="name" value="{{ __('Detail') }}" />
+            <x-jet-label for="detail" value="{{ __('Detail') }}" />
             
             <textarea class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="text" rows="4" autofocus wire:model="detail"></textarea>
             <x-jet-input-error for="detail" class="mt-2" />
@@ -457,26 +436,7 @@
             <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="fantasy_name"/>
             <x-jet-input-error for="fantasy_name" class="mt-2" />
         </div>   
-        <div class="col-span-6 sm:col-span-4 py-2">
-            <x-jet-label for="name" value="{{ __('Email') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="email"  autofocus wire:model="email"/>
-            <x-jet-input-error for="email" class="mt-2" />
-        </div>   
-        <div class="col-span-6 sm:col-span-4 py-2">
-            <x-jet-label for="name" value="{{ __('Phone') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="phone"/>
-            <x-jet-input-error for="phone" class="mt-2" />
-        </div>   
-        <div class="col-span-6 sm:col-span-4 py-2">
-            <x-jet-label for="name" value="{{ __('Web site') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="web"/>
-            <x-jet-input-error for="web" class="mt-2" />
-        </div>   
-        <div class="col-span-6 sm:col-span-4 py-2">
-            <x-jet-label for="name" value="{{ __('Adress') }}" />
-            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="adress"/>
-            <x-jet-input-error for="adress" class="mt-2" />
-        </div> 
+        
         <div class="col-span-6 sm:col-span-4 py-2">
             <x-jet-label for="name" value="{{ __('Dni') }}" />
             <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="dni"/>
@@ -490,16 +450,16 @@
 
             @endif
 
-            @if ($logo != null)
+            @if ($logo_photo_path)
                 {{ __('Photo Preview:') }}
-                <img width="100px" src="{{ $logo->temporaryUrl() }}">
+                <img width="100px" src="{{ $logo_photo_path->temporaryUrl() }}">
             @endif
             <x-jet-label for="name" value="{{ __('Logo') }}" />
-            <x-jet-input  class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="file"  autofocus wire:model="logo"/>
-            <x-jet-input-error for="logo" class="mt-2" />
+            <x-jet-input  class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="file"  autofocus wire:model="logo_photo_path"/>
+            <x-jet-input-error for="logo_photo_path" class="mt-2" />
         </div>  
 
-        <div class="col-span-6 sm:col-span-4 py-2">
+        {{-- <div class="col-span-6 sm:col-span-4 py-2">
             <x-jet-label for="name" value="{{ __('Headline name') }}" />
             <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="headline_name"/>
             <x-jet-input-error for="headline_name" class="mt-2" />
@@ -523,9 +483,9 @@
             <x-jet-label for="name" value="{{ __('Notification email') }}" />
             <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="notification_email"/>
             <x-jet-input-error for="notification_email" class="mt-2" />
-        </div>   
+        </div>    --}}
         <div class="col-span-6 sm:col-span-4 py-2">
-            <x-jet-label for="name" value="{{ __('Detail') }}" />
+            <x-jet-label for="detail" value="{{ __('Detail') }}" />
             
             <textarea class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="text" rows="4" autofocus wire:model="detail"></textarea>
             <x-jet-input-error for="detail" class="mt-2" />

@@ -40,6 +40,9 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'user.deleted','guard_name' => 'web']);
         Permission::create(['name' => 'user.filter','guard_name' => 'web']);
         Permission::create(['name' => 'user.create','guard_name' => 'web']);
+        //update on user index view
+        Permission::create(['name' => 'user.addExistingUser','guard_name' => 'web']);
+        Permission::create(['name' => 'user.removeExistingUser','guard_name' => 'web']);
         Permission::create(['name' => 'user.download','guard_name' => 'web']);
         Permission::create(['name' => 'user.show','guard_name' => 'web']);
         Permission::create(['name' => 'user.edit','guard_name' => 'web']);

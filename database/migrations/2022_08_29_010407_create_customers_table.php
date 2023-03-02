@@ -13,14 +13,21 @@ class CreateCustomersTable extends Migration
      */
     public function up()
     {
-        Schema::create('customers', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
-            $table->softDeletes();
-            $table->timestamps();
-        });
+        // Schema::create('customers', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->unsignedBigInteger('company_id');
+        //     $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
+
+        //     //Company info
+        //     $table->string('social_name');
+        //     $table->string('fantasy_name')->nullable();
+        //     $table->string('dni')->nullable();
+        //     $table->string('logo_photo_path')->nullable();
+        //     $table->text('detail');
+
+        //     $table->softDeletes();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -30,6 +37,6 @@ class CreateCustomersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customers');
+        // Schema::dropIfExists('customers');
     }
 }
