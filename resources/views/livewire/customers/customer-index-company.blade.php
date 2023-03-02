@@ -131,7 +131,7 @@
                     </th>
                      <td class="px-6 py-4 ">
                         @if(in_array("viewContracts", $permissions))                     
-                          <a href="{{route('contracts.index.customer', $customer->id)}}" type='button' 
+                          <a href="{{route('contracts.index.customer', [$customer->id, $companyId])}}" type='button' 
                              class='font-medium bg-gray-300 text-white rounded-md px-2 hover:bg-gray-500 px-2 py-1 w-max'>
                             {{$customer->contracts->count()}} {{ __('Contracts') }}
                           </a>
@@ -303,11 +303,39 @@
       <x-slot name="content">        
 
 
-            <div>
-                <x-jet-label for="name" value="{{ __('Name') }}" />
-                <x-jet-input class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" wire:model="name" />
-                <x-jet-input-error for="name" class="mt-2" />
-            </div>
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Social name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  required autofocus wire:model="social_name"/>
+            <x-jet-input-error for="social_name" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Fantasy name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="fantasy_name"/>
+            <x-jet-input-error for="fantasy_name" class="mt-2" />
+        </div>   
+        
+        
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Dni') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="dni"/>
+            <x-jet-input-error for="dni" class="mt-2" />
+        </div> 
+        <div class="col-span-6 sm:col-span-4 py-2">
+            @if ($logo_photo_path)
+                {{ __('Photo Preview:') }}
+                <img width="100px" src="{{ $logo_photo_path->temporaryUrl() }}">
+            @endif
+            <x-jet-label for="name" value="{{ __('Logo') }}" />
+            <x-jet-input  class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="file"  autofocus wire:model="logo_photo_path"/>
+            <x-jet-input-error for="logo" class="mt-2" />
+        </div>  
+       
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="detail" value="{{ __('Detail') }}" />
+            
+            <textarea class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="text" rows="4" autofocus wire:model="detail"></textarea>
+            <x-jet-input-error for="detail" class="mt-2" />
+        </div>        
             
          
       </x-slot>
@@ -323,6 +351,8 @@
       </x-slot>
   </x-jet-dialog-modal>
 
+  
+
 
   <!-- Edit Customer Modal -->
   <x-jet-dialog-modal wire:model="editCustomer"> 
@@ -332,11 +362,45 @@
 
       <x-slot name="content">
           
-            <div>
-                <x-jet-label for="name" value="{{ __('Name') }}" />
-                <x-jet-input class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" wire:model="name" />
-                <x-jet-input-error for="name" class="mt-2" />
-            </div>
+            <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Social name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  required autofocus wire:model="social_name"/>
+            <x-jet-input-error for="social_name" class="mt-2" />
+        </div>   
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Fantasy name') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="fantasy_name"/>
+            <x-jet-input-error for="fantasy_name" class="mt-2" />
+        </div>   
+        
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="name" value="{{ __('Dni') }}" />
+            <x-jet-input  class="block mt-1 w-full" type="text"  autofocus wire:model="dni"/>
+            <x-jet-input-error for="dni" class="mt-2" />
+        </div> 
+        <div class="col-span-6 sm:col-span-4 py-2">
+            
+            @if($logo_saved != null)
+              Imagen Guardada:
+              <img class="rounded-xl" src="{{ url('storage/companies/'.$logo_saved) }}" alt="" width="200px">
+
+            @endif
+
+            @if ($logo_photo_path)
+                {{ __('Photo Preview:') }}
+                <img width="100px" src="{{ $logo_photo_path->temporaryUrl() }}">
+            @endif
+            <x-jet-label for="name" value="{{ __('Logo') }}" />
+            <x-jet-input  class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="file"  autofocus wire:model="logo_photo_path"/>
+            <x-jet-input-error for="logo_photo_path" class="mt-2" />
+        </div>  
+
+        <div class="col-span-6 sm:col-span-4 py-2">
+            <x-jet-label for="detail" value="{{ __('Detail') }}" />
+            
+            <textarea class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="text" rows="4" autofocus wire:model="detail"></textarea>
+            <x-jet-input-error for="detail" class="mt-2" />
+        </div>
 
                                  
       </x-slot>
@@ -375,7 +439,7 @@
                   <hr>
                   <div class="w-full flex justify-between mt-10">                   
                     <div class="text-sm text-gray-400">{{__('Name')}}:</div>                          
-                    <div class="text-sm text-gray-600 uppercase">{{$customerShow->name}}</div>                            
+                    <div class="text-sm text-gray-600 uppercase">{{$customerShow->social_name}}</div>                            
                   </div> 
                   
                                     

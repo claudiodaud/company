@@ -35,17 +35,19 @@ class CompanyCustomersExport implements FromView
             if ($this->active == true) {
 
                 $customers = $customersByCompany->Where(function($query) {
-                                 $query  ->orWhere('customers.name', 'like', '%'.$this->search.'%')
-                                         ->orWhere('customers.created_at', 'like', '%'.$this->search.'%')
-                                         ->orWhere('customers.updated_at', 'like', '%'.$this->search.'%');                            
-                                    })->orderBy('customers.id', 'DESC')->get();
+                                 $query  ->orWhere('companies.social_name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.fantasy_name', 'like', '%'.$this->search.'%')   
+                                         ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('companies.id', 'DESC')->get();
             }else{
 
                  $customers = $customersByCompany->Where(function($query) {
-                                 $query  ->orWhere('customers.name', 'like', '%'.$this->search.'%')
-                                         ->orWhere('customers.created_at', 'like', '%'.$this->search.'%')
-                                         ->orWhere('customers.updated_at', 'like', '%'.$this->search.'%');                            
-                                    })->orderBy('customers.id', 'DESC')->onlyTrashed()->get();
+                                 $query  ->orWhere('companies.social_name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.fantasy_name', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.created_at', 'like', '%'.$this->search.'%')
+                                         ->orWhere('companies.updated_at', 'like', '%'.$this->search.'%');                            
+                                    })->orderBy('companies.id', 'DESC')->onlyTrashed()->get();
                                        
             }
             
@@ -58,11 +60,11 @@ class CompanyCustomersExport implements FromView
 
              if ($this->active == true) {
 
-                $customers = Company::find($this->companyId)->customers()->orderBy('customers.id', 'DESC')->get();
+                $customers = Company::find($this->companyId)->customers()->orderBy('companies.id', 'DESC')->get();
 
             }else{
 
-                $customers = Company::find($this->companyId)->customers()->orderBy('customers.id', 'DESC')->onlyTrashed()->get();
+                $customers = Company::find($this->companyId)->customers()->orderBy('companies.id', 'DESC')->onlyTrashed()->get();
 
             }    
             

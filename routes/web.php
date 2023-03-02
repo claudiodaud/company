@@ -54,7 +54,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         
         // Operationals Modules 
         Route::get('/companies-index', CompanyIndex::class)->name('companies.index');
-        Route::get('/contracts-index-customer/{id?}', ContractIndexCustomer::class)->name('contracts.index.customer');  
+        Route::get('/contracts-index-customer/{customer_id?}/{company_id?}', ContractIndexCustomer::class)->name('contracts.index.customer');  
         Route::get('/customers-index-company/{id?}', CustomerIndexCompany::class)->name('customers.index.company');   
         Route::get('/services-index-company/{id?}', ServiceIndexCompany::class)->name('services.index.company');  
         Route::get('/products-index-company/{id?}', ProductIndexCompany::class)->name('products.index.company');  

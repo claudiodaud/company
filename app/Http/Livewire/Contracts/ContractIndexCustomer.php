@@ -3,9 +3,8 @@
 namespace App\Http\Livewire\Contracts;
 
 use App\Exports\CustomerContractsExport;
-use App\Models\Company;
 use App\Models\Contract;
-use App\Models\Customer;
+use App\Models\Company;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -52,7 +51,8 @@ class ContractIndexCustomer extends Component
     public $search; 
 
 
-    public $name; 
+    public $name;
+    public $detail; 
     
 
     public $active = true;
@@ -65,22 +65,22 @@ class ContractIndexCustomer extends Component
     public $permissions;   
         
 
-    public function mount($id)
+    public function mount($customer_id,$company_id)
     {
-        $this->customerId = $id ; 
-        $this->companyId = Customer::find($id)->company_id;
+        $this->customerId = $customer_id ; 
+        $this->companyId = $company_id;
         $this->getPermissions();
     }
 
     public function render()
     {
-        $usersByCompany = Company::find($this->companyId)->users()->where(function($query) {
+        $usersByCompany = Company::find($this->customerId)->users()->where(function($query) {
             $query->where('users.id',auth()->user()->id);
         });
 
         if(count($usersByCompany->get()) > 0){
 
-            $contractsByCustomer = Customer::find($this->customerId)->contracts();
+            $contractsByCustomer = Company::find($this->customerId)->contracts();
             
             
             
@@ -249,8 +249,9 @@ class ContractIndexCustomer extends Component
     
 
         $contract = Contract::create([
-            'name' => $this->name,                                    
-            'customer_id' => $this->customerId,  
+            'name' => $this->name,  
+            'detail' => $this->detail,                                  
+            'company_id' => $this->customerId,  
         ]);
 
 

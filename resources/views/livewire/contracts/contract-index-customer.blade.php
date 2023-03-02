@@ -1,8 +1,8 @@
 <div>
   <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-      <span class="text-gray-400 uppercase">{{ __(App\Models\Company::find($companyId)->name.' /') }}</span> 
-      <span class="text-gray-400 ">{{ __(App\Models\Customer::find($customerId)->name.' /') }}</span> 
+      <span class="text-gray-400 uppercase">{{ __(App\Models\Company::find($companyId)->social_name.' /') }}</span> 
+      <span class="text-gray-400 ">{{ __(App\Models\Company::find($customerId)->social_name.' /') }}</span>  
       <span class="text-gray-700">{{__(' Contracts Index')}}</span>
     </h2>
   </x-slot>
@@ -323,6 +323,14 @@
                 <x-jet-input class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" wire:model="name" />
                 <x-jet-input-error for="name" class="mt-2" />
             </div>
+
+            <div class="col-span-6 sm:col-span-4 py-2">
+                <x-jet-label for="detail" value="{{ __('Detail') }}" />
+                
+                <textarea class="block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="text" rows="4" autofocus wire:model="detail"></textarea>
+                <x-jet-input-error for="detail" class="mt-2" />
+            </div>
+
             
          
       </x-slot>
