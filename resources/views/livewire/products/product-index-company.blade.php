@@ -1,7 +1,7 @@
 <div>
   <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-      <span class="text-gray-400 uppercase">{{ __(App\Models\Company::find($companyId)->name.' /') }}</span> 
+      <span class="text-gray-400 uppercase">{{ __(App\Models\Company::find($companyId)->social_name.' /') }}</span> 
       <span class="text-gray-700">{{__(' Products Index')}}</span>
     </h2>
   </x-slot>

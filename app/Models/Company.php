@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Box;
+use App\Models\Condition;
 use App\Models\Product;
 use App\Models\Role;
 use App\Models\Service;
@@ -65,7 +66,7 @@ class Company extends Model
     public function services()
     {
         // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
-        return $this->belongsToMany(Service::class);
+        return $this->hasMany(Service::class);
     }
 
     /**
@@ -76,7 +77,18 @@ class Company extends Model
     public function products()
     {
         // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
-        return $this->belongsToMany(Product::class);
+        return $this->hasMany(Product::class);
+    }
+
+    /**
+     * Company belongs to Products.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function conditions()
+    {
+        // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
+        return $this->hasMany(Condition::class);
     }
 
 

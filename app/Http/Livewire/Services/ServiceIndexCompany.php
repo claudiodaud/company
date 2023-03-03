@@ -238,10 +238,9 @@ class ServiceIndexCompany extends Component
     
 
         $service = Service::create([
-            'name' => $this->name,       
+            'name' => $this->name, 
+            'company_id' => $this->companyId,      
         ]);
-
-        $service->companies()->sync($this->companyId);
 
         $this->name = "";
         

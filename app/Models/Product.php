@@ -18,7 +18,7 @@ class Product extends Model
      * @var string[]
      */
     protected $fillable = [
-        'name',
+        'name','company_id'
     ];
 
     /**
@@ -29,7 +29,7 @@ class Product extends Model
     public function companies()
     {
         // belongsTo(RelatedModel, foreignKey = users_id, keyOnRelatedModel = id)
-        return $this->belongsToMany(Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     /**

@@ -239,10 +239,9 @@ class ProductIndexCompany extends Component
     
 
         $product = Product::create([
-            'name' => $this->name,       
+            'name' => $this->name,  
+            'company_id' => $this->companyId,  
         ]);
-
-        $product->companies()->sync($this->companyId);
 
         $this->name = "";
         

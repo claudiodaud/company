@@ -23,6 +23,7 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'viewCustomers','guard_name' => 'web']);
         Permission::create(['name' => 'viewServices','guard_name' => 'web']);
         Permission::create(['name' => 'viewProducts','guard_name' => 'web']);
+        Permission::create(['name' => 'viewConditions','guard_name' => 'web']);
         Permission::create(['name' => 'viewQuotes','guard_name' => 'web']);
 
         //Company permissions
@@ -40,9 +41,11 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'user.deleted','guard_name' => 'web']);
         Permission::create(['name' => 'user.filter','guard_name' => 'web']);
         Permission::create(['name' => 'user.create','guard_name' => 'web']);
+        
         //update on user index view
         Permission::create(['name' => 'user.addExistingUser','guard_name' => 'web']);
         Permission::create(['name' => 'user.removeExistingUser','guard_name' => 'web']);
+
         Permission::create(['name' => 'user.download','guard_name' => 'web']);
         Permission::create(['name' => 'user.show','guard_name' => 'web']);
         Permission::create(['name' => 'user.edit','guard_name' => 'web']);
@@ -112,6 +115,17 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'product.delete','guard_name' => 'web']);
         Permission::create(['name' => 'product.restore','guard_name' => 'web']);
         Permission::create(['name' => 'product.forceDelete','guard_name' => 'web']);
+
+        //Conditions Permissions
+        Permission::create(['name' => 'condition.deleted','guard_name' => 'web']);
+        Permission::create(['name' => 'condition.filter','guard_name' => 'web']);
+        Permission::create(['name' => 'condition.create','guard_name' => 'web']);
+        Permission::create(['name' => 'condition.download','guard_name' => 'web']);
+        Permission::create(['name' => 'condition.show','guard_name' => 'web']);
+        Permission::create(['name' => 'condition.edit','guard_name' => 'web']);
+        Permission::create(['name' => 'condition.delete','guard_name' => 'web']);
+        Permission::create(['name' => 'condition.restore','guard_name' => 'web']);
+        Permission::create(['name' => 'condition.forceDelete','guard_name' => 'web']);
 
         //Quotes Permissions
         Permission::create(['name' => 'quote.deleted','guard_name' => 'web']);
